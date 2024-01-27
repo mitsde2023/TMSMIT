@@ -11,9 +11,10 @@ const UserTicket = require('./models/UserTicket')
 const TicketResolution = require('./models/TicketResolution')
 
 const app = express();
+app.use(cors());
+app.use(express.json()); 
 const port = 2000;
 
-app.use(cors());
 
 
 app.get('/get', async (req, res) => {
@@ -32,8 +33,9 @@ app.get('/get', async (req, res) => {
 
 // Create a new department
 app.post('/departments', async (req, res) => {
-    const { DepartmentName } = req.body;
+    console.log(req.body, 36)
 
+    const DepartmentName = req.body.DepartmentName;
     try {
         const department = await Department.create({ DepartmentName });
         res.status(201).json({ response: "success", data: department, status: 201 });
