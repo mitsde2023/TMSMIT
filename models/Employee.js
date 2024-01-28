@@ -13,6 +13,14 @@ const Employee = sequelize.define('Employee', {
     type: DataTypes.STRING(255),
     allowNull: false,
   },
+  EmployeeEmail: {
+    type: DataTypes.STRING(255),
+    allowNull: false,
+  },
+  EmployeePassword: {
+    type: DataTypes.STRING, // Change the data type based on your security requirements
+    allowNull: false,
+  },
 });
 
 Employee.belongsTo(Department, { foreignKey: 'DepartmentID' });

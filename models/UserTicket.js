@@ -2,6 +2,7 @@ const { DataTypes } = require('sequelize');
 const sequelize = require('../config');
 const User = require('./User');
 const Ticket = require('./Ticket');
+const Employee = require('./Employee');
 
 const UserTicket = sequelize.define('UserTicket', {
   UserTicketID: {
@@ -12,6 +13,7 @@ const UserTicket = sequelize.define('UserTicket', {
 });
 
 UserTicket.belongsTo(User, { foreignKey: 'UserID' });
+UserTicket.belongsTo(Employee, { foreignKey: 'EmployeeID' });
 UserTicket.belongsTo(Ticket, { foreignKey: 'TicketID' });
 
 module.exports = UserTicket;

@@ -11,8 +11,16 @@ const Student = sequelize.define('Student', {
     type: DataTypes.STRING,
     allowNull: false,
   },
+  StudentEmail: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
   Registration_No : {
     type: DataTypes.STRING,
+    allowNull: false,
+  },
+  StudentPassword: {
+    type: DataTypes.STRING, // Change the data type based on your security requirements
     allowNull: false,
   },
 

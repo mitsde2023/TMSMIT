@@ -9,12 +9,15 @@ const Ticket = require('./models/Ticket');
 const User = require('./models/User')
 const UserTicket = require('./models/UserTicket')
 const TicketResolution = require('./models/TicketResolution')
-
+const TicketUpdate = require('./models/TicketUpdate');
+const authRoutes = require('./AuthRoutes/Auth')
 const app = express();
 app.use(cors());
-app.use(express.json()); 
+app.use(express.json());
 const port = 2000;
 
+
+app.use('/auth', authRoutes);
 
 
 app.get('/get', async (req, res) => {
@@ -60,10 +63,10 @@ app.post('/subdepartments', async (req, res) => {
 
 // Create a new employee
 app.post('/employees', async (req, res) => {
-    const { EmployeeName, DepartmentID, SubDepartmentID } = req.body;
+    const { EmployeeName, DepartmentID, SubDepartmentID, EmployeeEmail } = req.body;
 
     try {
-        const employee = await Employee.create({ EmployeeName, DepartmentID, SubDepartmentID });
+        const employee = await Employee.create({ EmployeeName, DepartmentID, SubDepartmentID, EmployeeEmail });
         res.status(201).json({ response: "success", data: employee, status: 201 });
     } catch (error) {
         console.error('Error creating employee:', error);
@@ -73,10 +76,10 @@ app.post('/employees', async (req, res) => {
 
 // Create a new student
 app.post('/students', async (req, res) => {
-    const { StudentName, Registration_No } = req.body;
+    const { StudentName, Registration_No, StudentEmail } = req.body;
 
     try {
-        const student = await Student.create({ StudentName, Registration_No });
+        const student = await Student.create({ StudentName, Registration_No, StudentEmail });
         res.status(201).json({ response: "success", data: student, status: 201 });
     } catch (error) {
         console.error('Error creating student:', error);
@@ -86,16 +89,68 @@ app.post('/students', async (req, res) => {
 
 // Create a new ticket
 app.post('/tickets', async (req, res) => {
-    const { UserID, Status, Description, Feedback, AssignedToDepartmentID, AssignedToSubDepartmentID, TransferredToDepartmentID, TransferredToSubDepartmentID } = req.body;
+    const { UserID, Status, Description, StudentId,EmployeeID, Feedback, AssignedToDepartmentID, AssignedToSubDepartmentID, TransferredToDepartmentID, TransferredToSubDepartmentID } = req.body;
 
     try {
-        const ticket = await Ticket.create({ UserID, Status, Description, Feedback, AssignedToDepartmentID, AssignedToSubDepartmentID, TransferredToDepartmentID, TransferredToSubDepartmentID });
+        const ticket = await Ticket.create({ UserID, Status, Description, StudentId, EmployeeID, Feedback, AssignedToDepartmentID, AssignedToSubDepartmentID, TransferredToDepartmentID, TransferredToSubDepartmentID });
         res.status(201).json({ response: "success", data: ticket, status: 201 });
     } catch (error) {
         console.error('Error creating ticket:', error);
         res.status(500).json({ response: "error", message: "Internal Server Error", status: 500 });
     }
 });
+
+
+app.post('/api/ticket-updates', async (req, res) => {
+    const { TicketID, UpdateDescription, UpdatedAttachmentUrl, EmployeeID, DepartmentID, SubDepartmentID } = req.body;
+
+    try {
+        const ticket = await Ticket.findByPk(TicketID);
+
+        if (!ticket) {
+            return res.status(404).json({ error: 'Ticket not found' });
+        }
+
+        // Create a new TicketUpdate record
+        const ticketUpdate = await TicketUpdate.create({
+            TicketID,
+            UpdateDescription,
+            UpdatedAttachmentUrl,
+            EmployeeID,
+            DepartmentID,
+            SubDepartmentID
+        });
+
+        res.json({ success: true, message: 'TicketUpdate created successfully', data: ticketUpdate });
+    } catch (error) {
+        console.error('Error creating TicketUpdate:', error);
+        res.status(500).json({ success: false, message: 'Error creating TicketUpdate', error: error.message });
+    }
+});
+
+// app.put('/ticket-updates/:id', async (req, res) => {
+//     const ticketUpdateId = req.params.id;
+
+//     try {
+//       const existingTicketUpdate = await TicketUpdate.findByPk(ticketUpdateId);
+
+//       if (!existingTicketUpdate) {
+//         return res.status(404).json({ error: 'TicketUpdate not found' });
+//       }
+
+//       // Update the ticket update properties based on the request body
+//       existingTicketUpdate.UpdateDescription = req.body.UpdateDescription || existingTicketUpdate.UpdateDescription;
+//       existingTicketUpdate.UpdatedAttachmentUrl = req.body.UpdatedAttachmentUrl || existingTicketUpdate.UpdatedAttachmentUrl;
+
+//       // Save the updated ticket update
+//       await existingTicketUpdate.save();
+
+//       res.json({ success: true, message: 'TicketUpdate updated successfully' });
+//     } catch (error) {
+//       console.error('Error updating TicketUpdate:', error);
+//       res.status(500).json({ success: false, message: 'Error updating TicketUpdate', error: error.message });
+//     }
+//   });
 
 // Create a new user
 app.post('/users', async (req, res) => {

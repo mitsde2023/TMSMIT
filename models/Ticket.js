@@ -35,6 +35,18 @@ const Ticket = sequelize.define('Ticket', {
     type: DataTypes.INTEGER,
     allowNull: true, // Make it nullable if you want to allow tickets without a specific employee
   },
+  AssignedToDepartmentID: {
+    type: DataTypes.INTEGER,
+  },
+  AssignedToSubDepartmentID: {
+    type: DataTypes.INTEGER,
+  },
+  TransferredToDepartmentID: {
+    type: DataTypes.INTEGER,
+  },
+  TransferredToSubDepartmentID: {
+    type: DataTypes.INTEGER,
+  },
   AttachmentUrl: {
     type: DataTypes.STRING, // Store the URL or path to the uploaded file
     allowNull: true,
@@ -42,10 +54,11 @@ const Ticket = sequelize.define('Ticket', {
 });
 
 Ticket.belongsTo(Student, { foreignKey: 'StudentId' });
+Ticket.belongsTo(Employee, { foreignKey: 'EmployeeID' });
 Ticket.belongsTo(Department, { foreignKey: 'AssignedToDepartmentID' });
 Ticket.belongsTo(SubDepartment, { foreignKey: 'AssignedToSubDepartmentID' });
 Ticket.belongsTo(Department, { foreignKey: 'TransferredToDepartmentID', as: 'TransferredToDepartment' });
 Ticket.belongsTo(SubDepartment, { foreignKey: 'TransferredToSubDepartmentID', as: 'TransferredToSubDepartment' });
-Ticket.belongsTo(Employee, { foreignKey: 'EmployeeID' });
+
 
 module.exports = Ticket;
