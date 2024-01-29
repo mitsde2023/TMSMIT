@@ -17,7 +17,7 @@ const Sidebar = () => {
         isOpen ? "w-48" : "w-12"
       } transition-width duration-300 ease-in-out`}
     >
-      <div className="flex justify-between border-b items-center py-2 px-3">
+      <div className="flex justify-between border-b items-center py-3 px-3">
         <button onClick={toggleSidebar} className="text-white text-xl">
           {isOpen ? (
             <i class="bi bi-arrow-left-square"></i>

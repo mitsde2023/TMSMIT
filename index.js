@@ -19,6 +19,57 @@ const port = 2000;
 
 app.use('/auth', authRoutes);
 
+app.get('/department/:departmentId', async (req, res) => {
+    const departmentId = req.params.departmentId;
+    try {
+      // Fetch department details
+      const department = await Department.findByPk(departmentId);
+      if (!department) {
+        return res.status(404).json({ error: 'Department not found' });
+      }
+  
+      // Fetch sub-departments
+      const subDepartments = await SubDepartment.findAll({
+        where: { DepartmentID: departmentId },
+      });
+  
+      // Fetch employees
+      const employees = await Employee.findAll({
+        where: { DepartmentID: departmentId },
+        include: [
+          {
+            model: SubDepartment,
+          },
+        ],
+      });
+      const tickets = await Ticket.findAll({ where:{AssignedToDepartmentID:departmentId}});
+      // Fetch ticket resolutions
+      const ticketResolutions = await TicketResolution.findAll({
+        include: [
+          {
+            model: Ticket,
+          },
+          {
+            model: Employee,
+          },
+        ],
+      });
+  
+      const data = {
+        department,
+        subDepartments,
+        employees,
+        tickets,
+        ticketResolutions,
+      };
+  
+      res.json(data);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  });
+
 
 app.get('/get', async (req, res) => {
     try {
@@ -89,10 +140,10 @@ app.post('/students', async (req, res) => {
 
 // Create a new ticket
 app.post('/tickets', async (req, res) => {
-    const { UserID, Status, Description, StudentId,EmployeeID, Feedback, AssignedToDepartmentID, AssignedToSubDepartmentID, TransferredToDepartmentID, TransferredToSubDepartmentID } = req.body;
+    const { UserID, Status, Description, StudentId, EmployeeID, Feedback, AssignedToDepartmentID, AssignedToSubDepartmentID, TransferredToDepartmentID, TransferredToSubDepartmentID } = req.body;
 
     try {
-        const ticket = await Ticket.create({ UserID, Status, Description, StudentId, EmployeeID, Feedback, AssignedToDepartmentID, AssignedToSubDepartmentID, TransferredToDepartmentID, TransferredToSubDepartmentID });
+        const ticket = await Ticket.create({ UserID, Status, Description, StudentId, EmployeeID , Feedback, AssignedToDepartmentID, AssignedToSubDepartmentID, TransferredToDepartmentID, TransferredToSubDepartmentID });
         res.status(201).json({ response: "success", data: ticket, status: 201 });
     } catch (error) {
         console.error('Error creating ticket:', error);
@@ -180,10 +231,10 @@ app.post('/usertickets', async (req, res) => {
 
 // Create a new ticket resolution
 app.post('/ticketresolutions', async (req, res) => {
-    const { TicketID, ResolutionStatus, ResolutionDescription, ResolutionFeedback, ResolutionTimestamp } = req.body;
+    const { TicketID, ResolutionStatus, ResolutionDescription, EmployeeID, ResolutionFeedback, ResolutionTimestamp } = req.body;
 
     try {
-        const ticketResolution = await TicketResolution.create({ TicketID, ResolutionStatus, ResolutionDescription, ResolutionFeedback, ResolutionTimestamp });
+        const ticketResolution = await TicketResolution.create({ TicketID, ResolutionStatus, EmployeeID, ResolutionDescription, ResolutionFeedback, ResolutionTimestamp });
         res.status(201).json({ response: "success", data: ticketResolution, status: 201 });
     } catch (error) {
         console.error('Error creating ticket resolution:', error);
