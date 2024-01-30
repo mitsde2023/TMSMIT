@@ -54,10 +54,10 @@ const Sidebar = () => {
             {showSubMenu && (
               <div className="ml-4">
                 <Link
-                  to="/user/dashboard/Ticket"
+                  to="/user/dashboard/Reply"
                   className="block py-2 px-4 text-sm"
                 >
-                  <i className="bi bi-ticket"></i> Ticket1
+                  <i className="bi bi-ticket"></i> Reply
                 </Link>
                 <Link
                   to="/user/dashboard/Ticket"
@@ -95,10 +95,10 @@ const Sidebar = () => {
             {showSubMenu && (
               <div className="ml-4">
                 <Link
-                  to="/user/dashboard/Ticket"
+                  to="/user/dashboard/Reply"
                   className="block py-2 px-2 text-sm"
                 >
-                  <i className="bi bi-ticket"></i>
+                  <i className="bi bi-ticket">Reply</i>
                 </Link>
                 <Link
                   to="/user/dashboard/Ticket"

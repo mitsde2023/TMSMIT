@@ -48,7 +48,7 @@ const Ticket = sequelize.define('Ticket', {
     type: DataTypes.INTEGER,
   },
   AttachmentUrl: {
-    type: DataTypes.STRING, // Store the URL or path to the uploaded file
+    type: DataTypes.JSON, // Store the URL or path to the uploaded file
     allowNull: true,
   },
 });
@@ -59,6 +59,5 @@ Ticket.belongsTo(Department, { foreignKey: 'AssignedToDepartmentID' });
 Ticket.belongsTo(SubDepartment, { foreignKey: 'AssignedToSubDepartmentID' });
 Ticket.belongsTo(Department, { foreignKey: 'TransferredToDepartmentID', as: 'TransferredToDepartment' });
 Ticket.belongsTo(SubDepartment, { foreignKey: 'TransferredToSubDepartmentID', as: 'TransferredToSubDepartment' });
-
 
 module.exports = Ticket;

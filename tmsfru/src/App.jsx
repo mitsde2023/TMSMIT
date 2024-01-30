@@ -7,6 +7,7 @@ import PrivateRoute from "./PrivateRoute";
 import DashBord from "./comp/DashBord";
 import Home from "./comp/Home";
 import Ticket from "./comp/Ticket";
+import Reply from "./comp/Reply";
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
           <Route path="dashboard" element={<DashBord />}>
             <Route path="Home" element={<Home />}></Route>
             <Route path="Ticket" element={<Ticket />}></Route>
+            <Route path="Reply" element={<Reply />}></Route>
           </Route>
         </Route>
       </Routes>
