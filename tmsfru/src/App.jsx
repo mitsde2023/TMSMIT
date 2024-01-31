@@ -9,6 +9,8 @@ import Home from "./comp/Home";
 import Ticket from "./comp/Ticket";
 import Reply from "./comp/Reply";
 import Org from "./comp/Org";
+import Team from "./comp/Team";
+import DepartmentTickets from "./comp/DepartmentTickets";
 
 function App() {
   return (
@@ -18,10 +20,13 @@ function App() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/user" element={<PrivateRoute />}>
           <Route path="dashboard" element={<DashBord />}>
-            <Route path="Home" element={<Home />}></Route>
+            <Route path="Home" element={<Home />}>
+              <Route path="Tickets" element={<DepartmentTickets />}></Route>
+            </Route>
             <Route path="Ticket" element={<Ticket />}></Route>
             <Route path="Reply" element={<Reply />}></Route>
             <Route path="Org" element={<Org />}></Route>
+            <Route path="Team" element={<Team />}></Route>
           </Route>
         </Route>
       </Routes>

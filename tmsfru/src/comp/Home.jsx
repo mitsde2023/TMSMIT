@@ -1,8 +1,11 @@
 import React from "react";
+import { Link, Outlet } from "react-router-dom";
 
 function Home() {
   return (
     <div className="container mx-auto p-2">
+      <div className="p-1 bg-red-200 font-bold text-center">My Dashbord <Link to={'Ticket'}>Ticket</Link></div>
+      <div className="p-1 bg-blue-200 font-bold text-center"><Link to={'Tickets'}>Me ||</Link> <Link to={'Tickets'}> Tickets</Link></div>
       {/* Container 1 with 2 cards */}
       <div className="mb-4">
         <h6 className="font-semibold mb-2">Comman Bucket</h6>
@@ -11,6 +14,7 @@ function Home() {
           <div className="bg-green-200 p-4 rounded shadow">Card 2</div>
         </div>
       </div>
+      <Outlet></Outlet>
 
       {/* Container 2 with 6 cards */}
       <div className="mb-4">

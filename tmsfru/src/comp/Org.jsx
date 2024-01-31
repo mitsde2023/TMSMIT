@@ -5,6 +5,8 @@ function Org() {
     <>
       <div className="container mx-auto p-2">
         {/* Container 1 with 2 cards */}
+        <div className="p-1 bg-red-200 font-bold text-center">Organization Dashbord</div>
+
         <div className="mb-4">
           <h4 className="font-semibold mb-2">Total Organization</h4>
           <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -18,7 +20,7 @@ function Org() {
             </div>
             <div className="bg-green-200 p-4 rounded shadow flex justify-around hover:bg-green-400">
               <div>
-                <strong>Resolved</strong>
+                <strong>Resolve</strong>
                 <h5 className="font-semibold">983</h5>
               </div>
 
@@ -26,7 +28,7 @@ function Org() {
             </div>
             <div className="bg-red-200 p-4 rounded shadow flex justify-around hover:bg-red-400">
               <div>
-                <strong>Pening</strong>
+                <strong>Pending</strong>
                 <h5 className="font-semibold">17</h5>
               </div>
 
@@ -50,7 +52,7 @@ function Org() {
 
             <div className="bg-pink-200 p-4 rounded shadow flex justify-around hover:bg-pink-400">
               <div>
-                <strong>Resolved</strong>
+                <strong>Resolve</strong>
                 <h5 className="font-semibold">983</h5>
               </div>
 
@@ -59,7 +61,7 @@ function Org() {
 
             <div className="bg-purple-200 p-4 rounded shadow flex justify-around hover:bg-purple-400">
               <div>
-                <strong>Pening</strong>
+                <strong>Pending</strong>
                 <h5 className="font-semibold">17</h5>
               </div>
 
@@ -86,7 +88,7 @@ function Org() {
             </div>
             <div className="bg-gray-200 p-4 rounded shadow flex justify-around hover:bg-gray-400">
               <div>
-                <strong>Resolved</strong>
+                <strong>Resolve</strong>
                 <h5 className="font-semibold">983</h5>
               </div>
 
@@ -94,7 +96,7 @@ function Org() {
             </div>
             <div className="bg-orange-200 p-4 rounded shadow flex justify-around hover:bg-orange-400">
               <div>
-                <strong>Pening</strong>
+                <strong>Pending</strong>
                 <h5 className="font-semibold">17</h5>
               </div>
 
