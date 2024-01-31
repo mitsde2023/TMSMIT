@@ -21,9 +21,9 @@ const TicketUpdate = sequelize.define('TicketUpdate', {
         allowNull: false,
     },
     UpdatedAttachmentUrls: {
-        type: DataTypes.JSON, 
+        type: DataTypes.JSON,
         allowNull: true,
-      },
+    },
     EmployeeID: {
         type: DataTypes.INTEGER,
         allowNull: true,
@@ -36,8 +36,9 @@ const TicketUpdate = sequelize.define('TicketUpdate', {
 });
 
 TicketUpdate.belongsTo(Ticket, { foreignKey: 'TicketID' });
-TicketUpdate.belongsTo(Student, {foreignKey:'StudentID'})
+TicketUpdate.belongsTo(Student, { foreignKey: 'StudentID' })
 TicketUpdate.belongsTo(Employee, { foreignKey: 'EmployeeID' });
 TicketUpdate.belongsTo(Department, { foreignKey: 'DepartmentID' });
 TicketUpdate.belongsTo(SubDepartment, { foreignKey: 'SubDepartmentID' });
+
 module.exports = TicketUpdate;

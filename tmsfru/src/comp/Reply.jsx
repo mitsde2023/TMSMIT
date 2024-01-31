@@ -8,7 +8,7 @@ const Reply = () => {
     DepartmentID:1,
     EmployeeID:9,
     SubDepartmentID:1,
-    file: null,
+    files: null,
   });
 
   const handleChange = (e) => {
@@ -21,7 +21,7 @@ const Reply = () => {
   const handleFileChange = (e) => {
     setFormData({
       ...formData,
-      file: e.target.files[0],
+      files: e.target.files,
     });
   };
 
@@ -40,7 +40,14 @@ const Reply = () => {
 
     //   formDataToSend.append('UpdateDescription', formData.UpdateDescription);
 
-      formDataToSend.append('file', formData.file);
+      // formDataToSend.append('file', formData.file);
+
+
+        // Append each file to formDataToSend
+        for (const file of formData.files) {
+          formDataToSend.append('files', file);
+        }
+  
 
       const response = await axios.post('http://localhost:2000/api/ticket-updates', formDataToSend);
 
@@ -123,7 +130,7 @@ const Reply = () => {
           />
         </div>
 
-        <div className="mb-4">
+        {/* <div className="mb-4">
           <label htmlFor="file" className="block text-sm font-bold text-gray-700">
             File
           </label>
@@ -136,7 +143,24 @@ const Reply = () => {
             accept=".jpg, .jpeg, .png, .gif, .pdf" // Add accepted file types
             required
           />
+        </div> */}
+
+        <div className="mb-4">
+          <label htmlFor="files" className="block text-sm font-bold text-gray-700">
+            Files
+          </label>
+          <input
+            type="file"
+            id="files"
+            name="files"
+            onChange={handleFileChange}
+            className="mt-1 p-2 w-full border rounded-md"
+            accept=".jpg, .jpeg, .png, .gif, .pdf" // Add accepted file types
+            multiple // Allow multiple file selection
+            required
+          />
         </div>
+
 
         <button
           type="submit"

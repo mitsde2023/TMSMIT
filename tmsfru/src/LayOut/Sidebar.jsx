@@ -31,37 +31,61 @@ const Sidebar = () => {
         <>
           <nav className="h-full">
             <Link
+              to="/user/dashboard/org"
+              className="block py-2 px-3 text-base hover:bg-orange-700 hover:text-white-700 hover:text-lg"
+            >
+              <i class="bi bi-building"></i> Organization
+            </Link>
+            <Link
+              to="/user/dashboard/Team"
+              className="block py-2 px-3 text-base hover:bg-orange-700 hover:text-white-700 hover:text-lg"
+            >
+              <i class="bi bi-people"></i> Team
+            </Link>
+
+            <Link
               to="/user/dashboard/Home"
-              className="block py-2 px-3 text-sm text-base"
+              className="block py-2 px-3 text-base hover:bg-orange-700 hover:text-white-700 hover:text-lg"
             >
               <i class="bi bi-house fs-2 "></i> Home
             </Link>
             <Link
               to="/user/dashboard/Ticket"
-              className="block py-2 px-3 text-sm text-base"
+              className="block py-2 px-3 text-base hover:bg-orange-700 hover:text-white-700 hover:text-lg"
             >
               <i class="bi bi-ticket"></i> Ticket
             </Link>
 
             <div
-              className="block py-2 px-3 text-sm text-base"
+              className="block py-2 px-3 text-base hover:bg-orange-700 hover:text-white-700 hover:text-lg"
               onClick={toggleSubMenu}
-              style={{ cursor: "pointer" }}
+              // style={{ cursor: "pointer" }}
             >
-              <i className="bi bi-house fs-2"></i> Menu
+              <div className="flex  justify-between">
+                <i className="bi bi-house fs-2"> Menu</i>
+                {showSubMenu ? (
+                  <>
+                    <i class="bi bi-chevron-up"></i>
+                  </>
+                ) : (
+                  <>
+                    <i class="bi bi-chevron-down"></i>
+                  </>
+                )}
+              </div>
             </div>
 
             {showSubMenu && (
               <div className="ml-4">
                 <Link
                   to="/user/dashboard/Reply"
-                  className="block py-2 px-4 text-sm"
+                  className="block py-2 px-4 text-sm hover:bg-orange-700 hover:text-white-700 hover:text-lg"
                 >
                   <i className="bi bi-ticket"></i> Reply
                 </Link>
                 <Link
                   to="/user/dashboard/Ticket"
-                  className="block py-2 px-4 text-sm"
+                  className="block py-2 px-4 text-sm hover:bg-orange-700 hover:text-white-700 hover:text-lg"
                 >
                   <i className="bi bi-ticket"></i> Ticket2
                 </Link>
@@ -73,36 +97,48 @@ const Sidebar = () => {
         <>
           <nav className="h-full">
             <Link
+              to="/user/dashboard/Org"
+              className="block py-2 px-3 text-xl hover:bg-orange-700 hover:text-white-700 hover:text-2xl"
+            >
+              <i class="bi bi-building"></i>
+            </Link>
+            <Link
+              to="/user/dashboard/Team"
+              className="block py-2 px-3 text-xl hover:bg-orange-700 hover:text-white-700 hover:text-2xl"
+            >
+              <i class="bi bi-people"></i>
+            </Link>
+            <Link
               to="/user/dashboard/Home"
-              className="block py-2 px-3 text-sm text-xl"
+              className="block py-2 px-3 text-xl hover:bg-orange-700 hover:text-white-700 hover:text-2xl"
             >
               <i class="bi bi-house"></i>
             </Link>
             <Link
               to="/user/dashboard/Ticket"
-              className="block py-2 px-3 text-sm text-xl"
+              className="block py-2 px-3 text-xl hover:bg-orange-700 hover:text-white-700 hover:text-2xl"
             >
               <i class="bi bi-ticket"></i>
             </Link>
             <div
-              className="block py-2 px-3 text-sm text-base"
+              className="block py-2 px-3 text-base flex justify-around "
               onClick={toggleSubMenu}
               style={{ cursor: "pointer" }}
             >
-              <i class="bi bi-caret-down"></i>
+              <i class="bi bi-chevron-down"></i>
             </div>
 
             {showSubMenu && (
               <div className="ml-4">
                 <Link
                   to="/user/dashboard/Reply"
-                  className="block py-2 px-2 text-sm"
+                  className="block py-2 px-2 text-sm hover:bg-orange-700 hover:text-white-700 hover:text-2xl"
                 >
-                  <i className="bi bi-ticket">Reply</i>
+                  <i className="bi bi-ticket"></i>
                 </Link>
                 <Link
                   to="/user/dashboard/Ticket"
-                  className="block py-2 px-2 text-sm"
+                  className="block py-2 px-2 text-sm hover:bg-orange-700 hover:text-white-700 hover:text-2xl"
                 >
                   <i className="bi bi-ticket"></i>
                 </Link>

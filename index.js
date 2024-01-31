@@ -3,7 +3,7 @@ const cors = require('cors');
 const sequelize = require('./config');
 const multer = require('multer');
 const upload = multer({ dest: 'uploads/' });
-const sharp = require('sharp');
+// const sharp = require('sharp');
 const cloudinary = require('cloudinary').v2;
 const Department = require('./models/Department')
 const SubDepartment = require('./models/SubDepartment')
@@ -23,9 +23,9 @@ const port = 2000;
 // const upload = multer({ storage: storage });
 
 cloudinary.config({
-  cloud_name: 'dtgpxvmpl',
-  api_key: '113933747541586',
-  api_secret: 'ubPVZqWAV1oOkGdwfuchq-l01i8',
+    cloud_name: 'dtgpxvmpl',
+    api_key: '113933747541586',
+    api_secret: 'ubPVZqWAV1oOkGdwfuchq-l01i8',
 });
 
 // Parse form data
@@ -187,6 +187,47 @@ app.post('/tickets', async (req, res) => {
 });
 
 
+// app.post('/api/ticket-updates', async (req, res) => {
+//     const { TicketID, UpdateDescription, EmployeeID, StudentID, DepartmentID, SubDepartmentID } = req.body;
+//     console.log(req.body)
+//     try {
+//         const ticket = await Ticket.findByPk(TicketID);
+
+//         if (!ticket) {
+//             return res.status(404).json({ error: 'Ticket not found' });
+//         }
+
+//         let updatedAttachmentUrl;
+
+//         // Check if there is an uploaded file
+//         if (req.files && req.files.length > 0) {
+//             // Upload the file to Cloudinary
+//             const result = await cloudinary.uploader.upload(req.files, {
+//                 folder: 'ticket-updates', // Set the Cloudinary folder name
+//             });
+//             console.log(result, 208)
+//             updatedAttachmentUrl = result.secure_url;
+
+//             console.log(updatedAttachmentUrl, 211)
+//         }
+
+//         // Create a new TicketUpdate record
+//         const ticketUpdate = await TicketUpdate.create({
+//             TicketID,
+//             UpdateDescription,
+//             UpdatedAttachmentUrl: updatedAttachmentUrl,
+//             EmployeeID,
+//             StudentID,
+//             DepartmentID,
+//             SubDepartmentID,
+//         });
+
+//         res.json({ success: true, message: 'TicketUpdate created successfully', data: ticketUpdate });
+//     } catch (error) {
+//         console.error('Error creating TicketUpdate:', error);
+//         res.status(500).json({ success: false, message: 'Error creating TicketUpdate', error: error.message });
+//     }
+// });
 
 
 // app.post('/api/ticket-updates', async (req, res) => {
@@ -226,84 +267,80 @@ app.post('/tickets', async (req, res) => {
 
 // API endpoint for creating ticket updates
 
+app.post('/api/ticket-updates', async (req, res) => {
+    const { TicketID, UpdateDescription, EmployeeID, StudentID, DepartmentID, SubDepartmentID } = req.body;
+    console.log(req.body, 230);
 
+    try {
+        const ticket = await Ticket.findByPk(TicketID);
 
+        if (!ticket) {
+            return res.status(404).json({ error: 'Ticket not found' });
+        }
 
+        let updatedAttachmentUrls = [];
+        //   if (req.files && req.files.length > 0) {
+        //     // Compress and upload each file to Cloudinary
+        //     for (const file of req.files) {
+        //       const compressedImageBuffer = await sharp(file.path)
+        //         .resize({ fit: 'inside', width: 800, height: 800 })
+        //         .toBuffer();
 
-// app.post('/api/ticket-updates', async (req, res) => {
-//     const { TicketID, UpdateDescription, EmployeeID, StudentID, DepartmentID, SubDepartmentID } = req.body;
-//     console.log(req.body, 230);
-  
-//     try {
-//       const ticket = await Ticket.findByPk(TicketID);
-  
-//       if (!ticket) {
-//         return res.status(404).json({ error: 'Ticket not found' });
-//       }
-  
-//       let updatedAttachmentUrls = [];
-//       if (req.files && req.files.length > 0) {
-//         // Compress and upload each file to Cloudinary
-//         for (const file of req.files) {
-//           const compressedImageBuffer = await sharp(file.path)
-//             .resize({ fit: 'inside', width: 800, height: 800 })
-//             .toBuffer();
-  
-//           const result = await cloudinary.uploader.upload_stream({
-//             folder: 'ticket-updates', // Set the Cloudinary folder name
-//           }, (error, result) => {
-//             if (error) {
-//               console.error('Error uploading file to Cloudinary:', error);
-//               res.status(500).json({ success: false, message: 'Error uploading file to Cloudinary', error: error.message });
-//             } else {
-//               console.log('File uploaded to Cloudinary:', result);
-//               updatedAttachmentUrls.push(result.secure_url);
-//             }
-//           }).end(compressedImageBuffer);
-//         }
-//       }
-  
-//       // Check if there are uploaded files
-//     //   if (req.files && req.files.length > 0) {
-//     //     // Upload each file to Cloudinary
-//     //     for (const file of req.files) {
-//     //       const result = await cloudinary.uploader.upload(file.path, {
-//     //         folder: 'ticket-updates', // Set the Cloudinary folder name
-//     //       });
-//     //       console.log(result, 246);
-//     //       updatedAttachmentUrls.push(result.secure_url);
-//     //     }
-//     //   }
-  
-//       // Create a new TicketUpdate record
-//       const ticketUpdate = await TicketUpdate.create({
-//         TicketID,
-//         UpdateDescription,
-//         UpdatedAttachmentUrls: updatedAttachmentUrls,
-//         EmployeeID,
-//         StudentID,
-//         DepartmentID,
-//         SubDepartmentID,
-//       });
-//   console.log(updatedAttachmentUrls, 283)
-//       res.json({ success: true, message: 'TicketUpdate created successfully', data: ticketUpdate });
-//     } catch (error) {
-//       console.error('Error creating TicketUpdate:', error);
-//       res.status(500).json({ success: false, message: 'Error creating TicketUpdate', error: error.message });
-//     }
-//   });
-  
+        //       const result = await cloudinary.uploader.upload_stream({
+        //         folder: 'ticket-updates', // Set the Cloudinary folder name
+        //       }, (error, result) => {
+        //         if (error) {
+        //           console.error('Error uploading file to Cloudinary:', error);
+        //           res.status(500).json({ success: false, message: 'Error uploading file to Cloudinary', error: error.message });
+        //         } else {
+        //           console.log('File uploaded to Cloudinary:', result);
+        //           updatedAttachmentUrls.push(result.secure_url);
+        //         }
+        //       }).end(compressedImageBuffer);
+        //     }
+        //   }
+
+        // Check if there are uploaded files
+        if (req.files && req.files.length > 0) {
+            // Upload each file to Cloudinary
+            for (const file of req.files) {
+                const result = await cloudinary.uploader.upload(file.path, {
+                    folder: 'ticket-updates', // Set the Cloudinary folder name
+                });
+                console.log(result, 246);
+                updatedAttachmentUrls.push(result.secure_url);
+            }
+        }
+
+        // Create a new TicketUpdate record
+        const ticketUpdate = await TicketUpdate.create({
+            TicketID,
+            UpdateDescription,
+            UpdatedAttachmentUrls: updatedAttachmentUrls,
+            EmployeeID,
+            StudentID,
+            DepartmentID,
+            SubDepartmentID,
+        });
+        console.log(updatedAttachmentUrls, 283)
+        res.json({ success: true, message: 'TicketUpdate created successfully', data: ticketUpdate });
+    } catch (error) {
+        console.error('Error creating TicketUpdate:', error);
+        res.status(500).json({ success: false, message: 'Error creating TicketUpdate', error: error.message });
+    }
+});
+
 
 
 
 // const uploadToCloudinary = async (files) => {
 //     let updatedAttachmentUrls = [];
-  
+
 //     for (const file of files) {
 //       const compressedImageBuffer = await sharp(file.path)
 //         .resize({ fit: 'inside', width: 800, height: 800 })
 //         .toBuffer();
-  
+
 //       try {
 //         const result = await cloudinary.uploader.upload_stream({
 //           folder: 'ticket-updates', // Set the Cloudinary folder name
@@ -322,21 +359,21 @@ app.post('/tickets', async (req, res) => {
 //         return [];
 //       }
 //     }
-  
+
 //     return updatedAttachmentUrls;
 //   };
-  
+
 
 //   app.post('/api/ticket-updates', async (req, res) => {
 //     const { TicketID, UpdateDescription, EmployeeID, StudentID, DepartmentID, SubDepartmentID } = req.body;
-  
+
 //     try {
 //       const ticket = await Ticket.findByPk(TicketID);
-  
+
 //       if (!ticket) {
 //         return res.status(404).json({ error: 'Ticket not found' });
 //       }
-  
+
 //       // Use the separate function to upload files to Cloudinary
 //       const updatedAttachmentUrls = await uploadToCloudinary(req.files);
 //   console.log(updatedAttachmentUrls, 342)
@@ -350,7 +387,7 @@ app.post('/tickets', async (req, res) => {
 //         DepartmentID,
 //         SubDepartmentID,
 //       });
-  
+
 //       res.json({ success: true, message: 'TicketUpdate created successfully', data: ticketUpdate });
 //     } catch (error) {
 //       console.error('Error creating TicketUpdate:', error);

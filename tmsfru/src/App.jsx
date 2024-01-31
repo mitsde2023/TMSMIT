@@ -8,6 +8,7 @@ import DashBord from "./comp/DashBord";
 import Home from "./comp/Home";
 import Ticket from "./comp/Ticket";
 import Reply from "./comp/Reply";
+import Org from "./comp/Org";
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
             <Route path="Home" element={<Home />}></Route>
             <Route path="Ticket" element={<Ticket />}></Route>
             <Route path="Reply" element={<Reply />}></Route>
+            <Route path="Org" element={<Org />}></Route>
           </Route>
         </Route>
       </Routes>
