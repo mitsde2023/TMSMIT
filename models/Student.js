@@ -1,5 +1,6 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config');
+// const Ticket = require('./Ticket');
 
 const Student = sequelize.define('Student', {
   StudentID: {
@@ -20,10 +21,12 @@ const Student = sequelize.define('Student', {
     allowNull: false,
   },
   StudentPassword: {
-    type: DataTypes.STRING, // Change the data type based on your security requirements
+    type: DataTypes.STRING, 
     allowNull: false,
   },
 
 });
+
+// Student.hasMany(Ticket, { foreignKey: 'StudentId' });
 
 module.exports = Student;

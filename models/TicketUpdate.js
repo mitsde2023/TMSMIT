@@ -1,6 +1,6 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../config");
-const Ticket = require("./Ticket");
+// const Ticket = require("./Ticket");
 const Employee = require("./Employee");
 const Department = require("./Department");
 const SubDepartment = require("./SubDepartment");
@@ -14,6 +14,10 @@ const TicketUpdate = sequelize.define('TicketUpdate', {
     },
     TicketID: {
         type: DataTypes.INTEGER,
+        allowNull: false,
+    },
+    UpdateStatus: {
+        type: DataTypes.STRING(20),
         allowNull: false,
     },
     UpdateDescription: {
@@ -35,7 +39,7 @@ const TicketUpdate = sequelize.define('TicketUpdate', {
 
 });
 
-TicketUpdate.belongsTo(Ticket, { foreignKey: 'TicketID' });
+// TicketUpdate.belongsTo(Ticket, { foreignKey: 'TicketID' });
 TicketUpdate.belongsTo(Student, { foreignKey: 'StudentID' })
 TicketUpdate.belongsTo(Employee, { foreignKey: 'EmployeeID' });
 TicketUpdate.belongsTo(Department, { foreignKey: 'DepartmentID' });

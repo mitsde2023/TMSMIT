@@ -3,11 +3,13 @@ import axios from 'axios';
 
 const Reply = () => {
   const [formData, setFormData] = useState({
-    TicketID: 8,
+    TicketID: 2,
     UpdateDescription: 'Lead Id Alredy In your Bucket',
     DepartmentID:1,
-    EmployeeID:9,
+    EmployeeID:13,
     SubDepartmentID:1,
+    Feedback:5,
+    UpdateStatus:"Resolve",
     files: null,
   });
 
@@ -33,10 +35,11 @@ const Reply = () => {
       formDataToSend.append('TicketID', formData.TicketID);
       formDataToSend.append('UpdateDescription', formData.UpdateDescription);
       formDataToSend.append('DepartmentID', formData.DepartmentID);
-
       formDataToSend.append('EmployeeID', formData.EmployeeID);
-
       formDataToSend.append('SubDepartmentID', formData.SubDepartmentID);
+      formDataToSend.append('Feedback', formData.Feedback);
+      formDataToSend.append('UpdateStatus', formData.UpdateStatus);
+
 
     //   formDataToSend.append('UpdateDescription', formData.UpdateDescription);
 
@@ -111,6 +114,20 @@ const Reply = () => {
             id="SubDepartmentID"
             name="SubDepartmentID"
             value={formData.SubDepartmentID}
+            onChange={handleChange}
+            className="mt-1 p-2 w-full border rounded-md"
+            required
+          />
+        </div>
+        <div className="mb-4">
+          <label htmlFor="UpdateStatus" className="block text-sm font-bold text-gray-700">
+          UpdateStatus
+          </label>
+          <input
+            type="text"
+            id="UpdateStatus"
+            name="UpdateStatus"
+            value={formData.UpdateStatus}
             onChange={handleChange}
             className="mt-1 p-2 w-full border rounded-md"
             required

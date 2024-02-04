@@ -15,6 +15,10 @@ const UserTicket = require('./models/UserTicket')
 const TicketResolution = require('./models/TicketResolution')
 const TicketUpdate = require('./models/TicketUpdate');
 const authRoutes = require('./AuthRoutes/Auth');
+const OrgaRoutes = require('./Routes/Organization');
+const QueryRoutes = require('./Routes/Query');
+const EmployeeRoutes = require('./Routes/Employee')
+
 const app = express();
 app.use(cors());
 app.use(express.json());
@@ -33,6 +37,11 @@ app.use(express.urlencoded({ extended: true }));
 app.use(upload.any());
 
 app.use('/auth', authRoutes);
+app.use('/Org', OrgaRoutes);
+app.use('/Query', QueryRoutes);
+app.use('/Employee', EmployeeRoutes);
+
+
 
 app.get('/department/:departmentId', async (req, res) => {
     const departmentId = req.params.departmentId;
@@ -40,62 +49,90 @@ app.get('/department/:departmentId', async (req, res) => {
         // Fetch department details
         const department = await Department.findAll({
             where: { DepartmentID: departmentId },
-            // include: [
-            //     {
-            //       model: Ticket,
-            //     },
-            //   ],
+            include: [
+                {
+                    model: SubDepartment,
+                }
+            ],
         });
+
         if (!department) {
             return res.status(404).json({ error: 'Department not found' });
         }
 
         // Fetch sub-departments
-        const subDepartments = await SubDepartment.findAll({
-            where: { DepartmentID: departmentId },
-        });
+        // const subDepartments = await SubDepartment.findAll({
+        //     where: { DepartmentID: departmentId },
+        // });
 
         // Fetch employees
         const employees = await Employee.findAll({
             where: { DepartmentID: departmentId },
             include: [
                 {
-                    model: SubDepartment,
+                    model: Department,
                 },
+                {
+                    model: SubDepartment,
+                }
             ],
         });
         const tickets = await Ticket.findAll({
             where: { AssignedToDepartmentID: departmentId },
             include: [
                 {
-                    model: Department,
-                },
-                {
-                    model: SubDepartment,
-                },
-                {
                     model: Employee,
+                    include: [
+                        {
+                            model: Department,
+                        },
+                        {
+                            model: SubDepartment,
+                        }
+                    ],
+                },
+                {
+                    model: Department,
+                    include: [
+                        {
+                            model: SubDepartment,
+                        },
+
+                    ],
+                },
+                {
+                    model: TicketUpdate,
+                    include: [
+                        {
+                            model: Employee,
+                            include: [
+                                {
+                                    model: Department,
+                                },
+                                {
+                                    model: SubDepartment,
+                                }
+                            ],
+                        },
+
+                    ],
+                },
+                {
+                    model: TicketResolution,
                 },
             ],
         });
         // Fetch ticket resolutions
-        const ticketResolutions = await TicketResolution.findAll({
-            include: [
-                {
-                    model: Ticket,
-                },
-                {
-                    model: Employee,
-                },
-            ],
-        });
+        // const ticketResolutions = await TicketResolution.findAll({
+
+        // });
 
         const data = {
             department,
-            subDepartments,
+            // subDepartments,
             employees,
             tickets,
-            ticketResolutions,
+            // ticketResolutions,
         };
 
         res.json(data);
@@ -149,10 +186,10 @@ app.post('/subdepartments', async (req, res) => {
 
 // Create a new employee
 app.post('/employees', async (req, res) => {
-    const { EmployeeName, DepartmentID, SubDepartmentID, EmployeeEmail } = req.body;
+    const { EmployeeName, DepartmentID, SubDepartmentID, EmployeeEmail, EmployeePassword } = req.body;
 
     try {
-        const employee = await Employee.create({ EmployeeName, DepartmentID, SubDepartmentID, EmployeeEmail });
+        const employee = await Employee.create({ EmployeeName, DepartmentID, SubDepartmentID, EmployeeEmail, EmployeePassword });
         res.status(201).json({ response: "success", data: employee, status: 201 });
     } catch (error) {
         console.error('Error creating employee:', error);
@@ -175,10 +212,10 @@ app.post('/students', async (req, res) => {
 
 // Create a new ticket
 app.post('/tickets', async (req, res) => {
-    const { UserID, Status, Description, StudentId, EmployeeID, Feedback, AssignedToDepartmentID, AssignedToSubDepartmentID, TransferredToDepartmentID, TransferredToSubDepartmentID } = req.body;
+    const { UserID, TicketType,LeadId, Status, Description, StudentId, EmployeeID, Feedback, AssignedToDepartmentID, AssignedToSubDepartmentID, TransferredToDepartmentID, TransferredToSubDepartmentID } = req.body;
 
     try {
-        const ticket = await Ticket.create({ UserID, Status, Description, StudentId, EmployeeID, Feedback, AssignedToDepartmentID, AssignedToSubDepartmentID, TransferredToDepartmentID, TransferredToSubDepartmentID });
+        const ticket = await Ticket.create({ UserID,TicketType, Status, Description, StudentId, EmployeeID, Feedback, AssignedToDepartmentID, AssignedToSubDepartmentID, TransferredToDepartmentID, TransferredToSubDepartmentID });
         res.status(201).json({ response: "success", data: ticket, status: 201 });
     } catch (error) {
         console.error('Error creating ticket:', error);
@@ -268,12 +305,11 @@ app.post('/tickets', async (req, res) => {
 // API endpoint for creating ticket updates
 
 app.post('/api/ticket-updates', async (req, res) => {
-    const { TicketID, UpdateDescription, EmployeeID, StudentID, DepartmentID, SubDepartmentID } = req.body;
+    const { TicketID, UpdateDescription,Feedback, UpdateStatus, EmployeeID, StudentID, DepartmentID, SubDepartmentID } = req.body;
     console.log(req.body, 230);
 
     try {
         const ticket = await Ticket.findByPk(TicketID);
-
         if (!ticket) {
             return res.status(404).json({ error: 'Ticket not found' });
         }
@@ -319,6 +355,8 @@ app.post('/api/ticket-updates', async (req, res) => {
             UpdatedAttachmentUrls: updatedAttachmentUrls,
             EmployeeID,
             StudentID,
+            UpdateStatus,
+            Feedback,
             DepartmentID,
             SubDepartmentID,
         });

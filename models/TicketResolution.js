@@ -1,7 +1,10 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config');
-const Ticket = require('./Ticket');
-const Employee = require('./Employee');
+// const Ticket = require('./Ticket');
+// const Employee = require('./Employee');
+// const Employee = require('./Employee');
+// const Ticket = require('./Ticket');
+// const Employee = require('./Employee');
 
 
 const TicketResolution = sequelize.define('TicketResolution', {
@@ -24,16 +27,16 @@ const TicketResolution = sequelize.define('TicketResolution', {
       max: 5,
     },
   },
-  EmployeeID: {
-    type: DataTypes.INTEGER,
-    allowNull: true,
-  },
+  // EmployeeID: {
+  //   type: DataTypes.INTEGER,
+  //   allowNull: true,
+  // },
   ResolutionTimestamp: {
     type: DataTypes.DATE,
   },
 });
 
-TicketResolution.belongsTo(Ticket, { foreignKey: 'TicketID' });
-TicketResolution.belongsTo(Employee, { foreignKey: 'EmployeeID' });
+// TicketResolution.belongsTo(Ticket, { foreignKey: 'TicketID' });
+// TicketResolution.belongsTo(Employee, { foreignKey: 'EmployeeID' });
 
 module.exports = TicketResolution;

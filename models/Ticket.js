@@ -4,6 +4,8 @@ const Student = require('./Student');
 const Department = require('./Department');
 const SubDepartment = require('./SubDepartment');
 const Employee = require('./Employee');
+const TicketUpdate = require('./TicketUpdate');
+const TicketResolution = require('./TicketResolution');
 
 const Ticket = sequelize.define('Ticket', {
   TicketID: {
@@ -11,30 +13,28 @@ const Ticket = sequelize.define('Ticket', {
     primaryKey: true,
     autoIncrement: true,
   },
+  TicketType:{
+    type: DataTypes.STRING(255),
+    allowNull: false,
+  },
   Status: {
     type: DataTypes.STRING(20),
     allowNull: false,
   },
   Description: {
     type: DataTypes.TEXT,
-  },
-  Feedback: {
-    type: DataTypes.INTEGER,
-    validate: {
-      min: 1,
-      max: 5,
-    },
-  },
+    allowNull: true,
 
-  StudentId: {
-    type: DataTypes.INTEGER,
+  },
+  LeadId: {
+    type: DataTypes.TEXT,
     allowNull: true,
   },
-
-  EmployeeID: { // Include EmployeeID field
+  ClaimEmployeeID: { // Include EmployeeID field
     type: DataTypes.INTEGER,
     allowNull: true, // Make it nullable if you want to allow tickets without a specific employee
   },
+
   AssignedToDepartmentID: {
     type: DataTypes.INTEGER,
   },
@@ -54,10 +54,14 @@ const Ticket = sequelize.define('Ticket', {
 });
 
 Ticket.belongsTo(Student, { foreignKey: 'StudentId' });
-Ticket.belongsTo(Employee, { foreignKey: 'EmployeeID' });
 Ticket.belongsTo(Department, { foreignKey: 'AssignedToDepartmentID' });
 Ticket.belongsTo(SubDepartment, { foreignKey: 'AssignedToSubDepartmentID' });
 Ticket.belongsTo(Department, { foreignKey: 'TransferredToDepartmentID', as: 'TransferredToDepartment' });
 Ticket.belongsTo(SubDepartment, { foreignKey: 'TransferredToSubDepartmentID', as: 'TransferredToSubDepartment' });
+Ticket.belongsTo(Employee, { foreignKey: 'EmployeeID' });
+Ticket.belongsTo(Employee, { foreignKey: 'ClaimEmployeeID', as: 'ClaimToEmployee' });
+Ticket.belongsTo(Employee, { foreignKey: 'TransferredClaimEmployeeID', as: 'TransferredClaimToEmployee' });
+Ticket.hasMany(TicketUpdate, { foreignKey: 'TicketId' });
+Ticket.belongsTo(TicketResolution, { foreignKey: 'TicketResolutionId' });
 
 module.exports = Ticket;

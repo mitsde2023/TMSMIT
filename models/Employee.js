@@ -2,6 +2,8 @@ const { DataTypes } = require('sequelize');
 const sequelize = require('../config');
 const Department = require('./Department');
 const SubDepartment = require('./SubDepartment');
+// const TicketResolution = require('./TicketResolution');
+// const Ticket = require('./Ticket');
 
 const Employee = sequelize.define('Employee', {
   EmployeeID: {
@@ -10,6 +12,10 @@ const Employee = sequelize.define('Employee', {
     autoIncrement: true,
   },
   EmployeeName: {
+    type: DataTypes.STRING(255),
+    allowNull: false,
+  },
+  Location: {
     type: DataTypes.STRING(255),
     allowNull: false,
   },
@@ -25,5 +31,8 @@ const Employee = sequelize.define('Employee', {
 
 Employee.belongsTo(Department, { foreignKey: 'DepartmentID' });
 Employee.belongsTo(SubDepartment, { foreignKey: 'SubDepartmentID' });
+// Employee.hasMany(Ticket, { foreignKey: 'EmployeeId' });
+// Employee.hasMany(Ticket, { foreignKey: 'EmployeeID' });
+// Employee.belongsTo(TicketResolution, { foreignKey: 'EmployeeID' });
 
 module.exports = Employee;
