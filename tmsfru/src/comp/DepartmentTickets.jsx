@@ -1,8 +1,49 @@
 import React from 'react'
 
-function DepartmentTickets() {
+function DepartmentTickets({data}) {
     return (
         <div>
+
+
+<h2>Ticket Table:</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Ticket Type</th>
+            <th>Status</th>
+            <th>Description</th>
+            <th>AttachmentUrl</th>
+            <th>Employee Name</th>
+            <th>Department Name</th>
+            <th>Resolution Status</th>
+            <th>Resolution Timestamp</th>
+          </tr>
+        </thead>
+        <tbody>
+          {data.map((ticket) => (
+            <tr key={ticket.TicketID}>
+              <td>{ticket.TicketType}</td>
+              <td>{ticket.Status}</td>
+              <td>{ticket.Description}</td>
+              <td>{ticket.AttachmentUrl}</td>
+              <td>{ticket.Employee.EmployeeName}</td>
+              <td>{ticket.Employee.Department.DepartmentName}</td>
+              <td>
+                {ticket.TicketResolution
+                  ? ticket.TicketResolution.ResolutionStatus
+                  : "-"}
+              </td>
+              <td>
+                {ticket.TicketResolution
+                  ? ticket.TicketResolution.ResolutionTimestamp
+                  : "-"}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
+
             DepartmentTickets
             <p>bucket count Live update and render in Table update ticket automatick using webscoket</p>
             <br />

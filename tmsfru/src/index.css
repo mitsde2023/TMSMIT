@@ -1,0 +1,7 @@
+table tr:hover {
+    background-color: #e0c5c5;
+  }
+  
+  table.selected-table tr.selected-row {
+    background-color: #a7e6a5; 
+  }

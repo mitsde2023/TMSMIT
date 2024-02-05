@@ -66,6 +66,7 @@ app.get('/department/:departmentId', async (req, res) => {
         // });
 
         // Fetch employees
+
         const employees = await Employee.findAll({
             where: { DepartmentID: departmentId },
             include: [
@@ -133,6 +134,103 @@ app.get('/department/:departmentId', async (req, res) => {
             employees,
             tickets,
             // ticketResolutions,
+        };
+
+        res.json(data);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+
+app.get('/department/:departmentId/:SubDepartmentId', async (req, res) => {
+    const departmentId = req.params.departmentId;
+    const SubDepartmentId = req.params.departmentId;
+    try {
+        // Fetch department details
+        // const department = await Department.findAll({
+        //     where: { DepartmentID: departmentId},
+        //     include: [
+        //         {
+        //             model: SubDepartment,
+        //             where: { id: SubDepartmentId},
+        //         }
+        //     ],
+        // });
+
+        if (!departmentId) {
+            return res.status(404).json({ error: 'Department not found' });
+        }
+
+        const employees = await Employee.findAll({
+            where: { DepartmentID: departmentId, SubDepartmentID: SubDepartmentId},
+            include: [
+                {
+                    model: Department,
+                },
+                {
+                    model: SubDepartment,
+                }
+            ],
+        });
+
+
+        const tickets = await Ticket.findAll({
+            where: { AssignedToDepartmentID: departmentId, AssignedToSubDepartmentID:SubDepartmentId },
+            include: [
+                {
+                    model: Employee,
+                    include: [
+                        {
+                            model: Department,
+                        },
+                        {
+                            model: SubDepartment,
+                        }
+                    ],
+                },
+                {
+                    model: Department,
+                    include: [
+                        {
+                            model: SubDepartment,
+                            where: { id: SubDepartmentId},
+                        },
+
+                    ],
+                },
+                {
+                    model: TicketUpdate,
+                    include: [
+                        {
+                            model: Employee,
+                            include: [
+                                {
+                                    model: Department,
+                                },
+                                {
+                                    model: SubDepartment,
+                                }
+                            ],
+                        },
+
+                    ],
+                },
+                {
+                    model: TicketResolution,
+                },
+            ],
+        });
+
+        // Fetch ticket resolutions
+        // const ticketResolutions = await TicketResolution.findAll({
+
+        // });
+
+        const data = {
+            employees,
+            tickets,
         };
 
         res.json(data);

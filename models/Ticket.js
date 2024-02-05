@@ -59,7 +59,7 @@ Ticket.belongsTo(SubDepartment, { foreignKey: 'AssignedToSubDepartmentID' });
 Ticket.belongsTo(Department, { foreignKey: 'TransferredToDepartmentID', as: 'TransferredToDepartment' });
 Ticket.belongsTo(SubDepartment, { foreignKey: 'TransferredToSubDepartmentID', as: 'TransferredToSubDepartment' });
 Ticket.belongsTo(Employee, { foreignKey: 'EmployeeID' });
-Ticket.belongsTo(Employee, { foreignKey: 'ClaimEmployeeID', as: 'ClaimToEmployee' });
+Ticket.belongsTo(Employee, { foreignKey: 'ClaimEmployeeID'});
 Ticket.belongsTo(Employee, { foreignKey: 'TransferredClaimEmployeeID', as: 'TransferredClaimToEmployee' });
 Ticket.hasMany(TicketUpdate, { foreignKey: 'TicketId' });
 Ticket.belongsTo(TicketResolution, { foreignKey: 'TicketResolutionId' });
