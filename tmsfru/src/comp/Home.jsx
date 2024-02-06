@@ -2,13 +2,22 @@ import React, { useEffect, useState } from "react";
 import { Link, Outlet } from "react-router-dom";
 import axios from "axios";
 import DepartmentTickets from "./DepartmentTickets";
+import Reply from "./Reply";
 function Home() {
   const [data, setData] = useState([]);
   const [closedCount, setClosedCount] = useState(0);
   const [openCount, setOpenCount] = useState(0);
   const [resolvedCount, setResolvedCount] = useState(0);
   const [selectedTicket, setSelectedTicket] = useState(null);
+  const [isModalOpen, setModalOpen] = useState(false);
 
+  const handleImageClick = () => {
+    setModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setModalOpen(false);
+  };
   // Assuming user is a string key for localStorage
   const user = JSON.parse(localStorage.getItem("user")); // Parse the JSON string
 
@@ -56,7 +65,7 @@ function Home() {
   return (
     <div className="container mx-auto p-1 flex flex-col sm:flex-row text-sm">
       {/* Left Column */}
-      <div className="sm:w-1/2">
+      <div className="sm:w-2/3">
         {/* <div className="p-1 bg-red-400 font-bold text-center">
           <Link to={"Tickets"}>Me ||</Link> <Link to={"Tickets"}> Tickets</Link>
         </div> */}
@@ -84,45 +93,66 @@ function Home() {
           </div>
         </div>
         <Outlet></Outlet>
-        <div className="mb-4">
-        <table className={`min-w-full bg-white border border-gray-300 ${selectedTicket ? 'selected-table' : ''}`}>
-  <thead>
-    <tr>
-      <th className="border-b">T-Type</th>
-      <th className="border-b">Status</th>
-      <th className="border-b">Description</th>
-      {/* <th className="border-b">AttachmentUrl</th> */}
-      <th className="border-b">From</th>
-      <th className="border-b">Depat</th>
-      <th className="border-b">RStatus</th>
-      <th className="border-b"> RTimestamp</th>
-    </tr>
-  </thead>
-  <tbody>
-    {data.map((ticket) => (
-      <tr key={ticket.TicketID} onClick={() => handleTicketClick(ticket)} className={`cursor-pointer ${selectedTicket === ticket ? 'selected-row' : ''}`}>
-        <td className="border-b">{ticket.TicketType}</td>
-        <td className="border-b">{ticket.Status}</td>
-        <td className="border-b">{ticket.Description}</td>
-        {/* <td className="border-b">{ticket.AttachmentUrl}</td> */}
-        <td className="border-b">{ticket.Employee.EmployeeName}</td>
-        <td className="border-b">
-          {ticket.Employee.Department.DepartmentName}
-        </td>
-        <td className="border-b">
-          {ticket.TicketResolution
-            ? ticket.TicketResolution.ResolutionStatus
-            : "-"}
-        </td>
-        <td className="border-b">
-          {ticket.TicketResolution
-            ? ticket.TicketResolution.ResolutionTimestamp
-            : "-"}
-        </td>
-      </tr>
-    ))}
-  </tbody>
-</table>
+        {isModalOpen && (
+        <div className="modal-overlay" onClick={handleCloseModal}>
+          <div className="modal-content">
+            <img
+              src={selectedTicket.AttachmentUrl[0]}
+              alt="Ticket Attachment"
+              className="modal-image"
+            />
+          </div>
+        </div>
+      )}
+        <div className="table-container">
+          <table
+            className={`custom-table ${
+              selectedTicket ? "selected-table" : ""
+            }`}
+          >
+            <thead>
+              <tr>
+                <th>Id</th>
+                <th>T-Type</th>
+                <th>Status</th>
+                <th>Description</th>
+                <th>Location</th>
+                <th>From</th>
+                <th>Depat</th>
+                <th>RStatus</th>
+                <th> RTimestamp</th>
+              </tr>
+            </thead>
+            <tbody>
+              {data.map((ticket) => (
+                <tr
+                  key={ticket.TicketID}
+                  onClick={() => handleTicketClick(ticket)}
+                  className={`cursor-pointer ${
+                    selectedTicket === ticket ? "selected-row" : ""
+                  }`}
+                >
+                  <td>  {ticket.TicketID}</td>
+                  <td>{ticket.TicketType}</td>
+                  <td>{ticket.Status}</td>
+                  <td>{ticket.Description}</td>
+                  <td>{ticket.Employee.Location}</td>
+                  <td>{ticket.Employee.EmployeeName}</td>
+                  <td>{ticket.Employee.Department.DepartmentName}</td>
+                  <td>
+                    {ticket.TicketResolution
+                      ? ticket.TicketResolution.ResolutionStatus
+                      : "-"}
+                  </td>
+                  <td>
+                    {ticket.TicketResolution
+                      ? ticket.TicketResolution.ResolutionTimestamp
+                      : "-"}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
         {/* <DepartmentTickets data={data} Tstatus={'Open'} /> */}
         <div className="mb-4">
@@ -162,21 +192,39 @@ function Home() {
       </div>
 
       {/* Right Column */}
-      <div className="sm:w-1/2">
+      <div className="sm:w-1/3">
+       <Reply ticketData={selectedTicket} />
 
-      {selectedTicket && (
+
+        {selectedTicket && (
           <div className="p-4 bg-gray-100 border border-gray-300">
             <h2 className="font-bold text-2xl mb-4">Ticket Details:</h2>
-            <p><strong>Ticket Type:</strong> {selectedTicket.TicketType}</p>
-            <p><strong>Status:</strong> {selectedTicket.Status}</p>
+            {/* <img src={selectedTicket.AttachmentUrl[0]} /> */}
+            <div className="image-container">
+      <img
+        src={selectedTicket.AttachmentUrl[0]}
+        alt="Ticket Attachment"
+        onClick={handleImageClick}
+      />
+    </div>
+            <p>
+              <strong>Ticket Type:</strong> {selectedTicket.TicketType}
+            </p>
+            <p>
+              <strong>Status:</strong> {selectedTicket.Status}
+            </p>
             {/* Add more details as needed */}
             <div className="mt-4">
               <h3 className="font-bold text-xl mb-2">Updates:</h3>
               {/* Display updates related to the selected ticket */}
               {selectedTicket.TicketUpdates.map((update) => (
                 <div key={update.UpdateID} className="mb-2">
-                  <p><strong>Update Status:</strong> {update.UpdateStatus}</p>
-                  <p><strong>Description:</strong> {update.UpdateDescription}</p>
+                  <p>
+                    <strong>Update Status:</strong> {update.UpdateStatus}
+                  </p>
+                  <p>
+                    <strong>Description:</strong> {update.UpdateDescription}
+                  </p>
                   {/* Add more details as needed */}
                 </div>
               ))}
@@ -185,8 +233,6 @@ function Home() {
             {/* ... */}
           </div>
         )}
-
-
       </div>
     </div>
   );

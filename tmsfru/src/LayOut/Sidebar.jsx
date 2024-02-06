@@ -20,9 +20,9 @@ const Sidebar = () => {
       <div className="flex justify-between border-b items-center py-3 px-3">
         <button onClick={toggleSidebar} className="text-white text-xl">
           {isOpen ? (
-            <i class="bi bi-arrow-left-square"></i>
+            <i className="bi bi-arrow-left-square"></i>
           ) : (
-            <i class="bi bi-arrow-right-square"></i>
+            <i className="bi bi-arrow-right-square"></i>
           )}
         </button>
       </div>
@@ -34,26 +34,26 @@ const Sidebar = () => {
               to="/user/dashboard/org"
               className="block py-2 px-3 text-base hover:bg-orange-700 hover:text-white-700 hover:text-lg"
             >
-              <i class="bi bi-building"></i> Organization
+              <i className="bi bi-building"></i> Organization
             </Link>
             <Link
               to="/user/dashboard/Team"
               className="block py-2 px-3 text-base hover:bg-orange-700 hover:text-white-700 hover:text-lg"
             >
-              <i class="bi bi-people"></i> Team
+              <i className="bi bi-people"></i> Team
             </Link>
 
             <Link
               to="/user/dashboard/Home"
               className="block py-2 px-3 text-base hover:bg-orange-700 hover:text-white-700 hover:text-lg"
             >
-              <i class="bi bi-house fs-2 "></i> Home
+              <i className="bi bi-house fs-2 "></i> Home
             </Link>
             <Link
               to="/user/dashboard/Ticket"
               className="block py-2 px-3 text-base hover:bg-orange-700 hover:text-white-700 hover:text-lg"
             >
-              <i class="bi bi-ticket"></i> Ticket
+              <i className="bi bi-ticket"></i> Ticket
             </Link>
 
             <div
@@ -65,11 +65,11 @@ const Sidebar = () => {
                 <i className="bi bi-house fs-2"> Menu</i>
                 {showSubMenu ? (
                   <>
-                    <i class="bi bi-chevron-up"></i>
+                    <i className="bi bi-chevron-up"></i>
                   </>
                 ) : (
                   <>
-                    <i class="bi bi-chevron-down"></i>
+                    <i className="bi bi-chevron-down"></i>
                   </>
                 )}
               </div>
@@ -100,32 +100,32 @@ const Sidebar = () => {
               to="/user/dashboard/Org"
               className="block py-2 px-3 text-xl hover:bg-orange-700 hover:text-white-700 hover:text-2xl"
             >
-              <i class="bi bi-building"></i>
+              <i className="bi bi-building"></i>
             </Link>
             <Link
               to="/user/dashboard/Team"
               className="block py-2 px-3 text-xl hover:bg-orange-700 hover:text-white-700 hover:text-2xl"
             >
-              <i class="bi bi-people"></i>
+              <i className="bi bi-people"></i>
             </Link>
             <Link
               to="/user/dashboard/Home"
               className="block py-2 px-3 text-xl hover:bg-orange-700 hover:text-white-700 hover:text-2xl"
             >
-              <i class="bi bi-house"></i>
+              <i className="bi bi-house"></i>
             </Link>
             <Link
               to="/user/dashboard/Ticket"
               className="block py-2 px-3 text-xl hover:bg-orange-700 hover:text-white-700 hover:text-2xl"
             >
-              <i class="bi bi-ticket"></i>
+              <i className="bi bi-ticket"></i>
             </Link>
             <div
               className="block py-2 px-3 text-base flex justify-around "
               onClick={toggleSubMenu}
               style={{ cursor: "pointer" }}
             >
-              <i class="bi bi-chevron-down"></i>
+              <i className="bi bi-chevron-down"></i>
             </div>
 
             {showSubMenu && (

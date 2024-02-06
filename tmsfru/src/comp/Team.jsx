@@ -14,7 +14,7 @@ function Team() {
             <h5 className="font-semibold">1000</h5>
           </div>
 
-          <i class="bi bi-postcard text-4xl"></i>
+          <i className="bi bi-postcard text-4xl"></i>
         </div>
         <div className="bg-green-200 p-4 rounded shadow flex justify-around hover:bg-green-400">
           <div>
@@ -22,7 +22,7 @@ function Team() {
             <h5 className="font-semibold">983</h5>
           </div>
 
-          <i class="bi bi-journal-check text-4xl"></i>
+          <i className="bi bi-journal-check text-4xl"></i>
         </div>
         <div className="bg-red-200 p-4 rounded shadow flex justify-around hover:bg-red-400">
           <div>
@@ -30,7 +30,7 @@ function Team() {
             <h5 className="font-semibold">17</h5>
           </div>
 
-          <i class="bi bi-envelope-paper text-4xl"></i>
+          <i className="bi bi-envelope-paper text-4xl"></i>
         </div>
       </div>
     </div>
@@ -45,7 +45,7 @@ function Team() {
             <h5 className="font-semibold">1000</h5>
           </div>
 
-          <i class="bi bi-postcard text-4xl"></i>
+          <i className="bi bi-postcard text-4xl"></i>
         </div>
 
         <div className="bg-pink-200 p-4 rounded shadow flex justify-around hover:bg-pink-400">
@@ -54,7 +54,7 @@ function Team() {
             <h5 className="font-semibold">983</h5>
           </div>
 
-          <i class="bi bi-journal-check text-4xl"></i>
+          <i className="bi bi-journal-check text-4xl"></i>
         </div>
 
         <div className="bg-purple-200 p-4 rounded shadow flex justify-around hover:bg-purple-400">
@@ -63,7 +63,7 @@ function Team() {
             <h5 className="font-semibold">17</h5>
           </div>
 
-          <i class="bi bi-envelope-paper text-4xl"></i>
+          <i className="bi bi-envelope-paper text-4xl"></i>
         </div>
 
         {/* <div className="bg-orange-200 p-4 rounded shadow">Card 4</div>
@@ -82,7 +82,7 @@ function Team() {
             <h5 className="font-semibold">1000</h5>
           </div>
 
-          <i class="bi bi-postcard text-4xl"></i>
+          <i className="bi bi-postcard text-4xl"></i>
         </div>
         <div className="bg-gray-200 p-4 rounded shadow flex justify-around hover:bg-gray-400">
           <div>
@@ -90,7 +90,7 @@ function Team() {
             <h5 className="font-semibold">983</h5>
           </div>
 
-          <i class="bi bi-journal-check text-4xl"></i>
+          <i className="bi bi-journal-check text-4xl"></i>
         </div>
         <div className="bg-orange-200 p-4 rounded shadow flex justify-around hover:bg-orange-400">
           <div>
@@ -98,7 +98,7 @@ function Team() {
             <h5 className="font-semibold">17</h5>
           </div>
 
-          <i class="bi bi-envelope-paper text-4xl"></i>
+          <i className="bi bi-envelope-paper text-4xl"></i>
         </div>
       </div>
     </div>

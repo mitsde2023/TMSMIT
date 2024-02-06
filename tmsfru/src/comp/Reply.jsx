@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 
-const Reply = () => {
+const Reply = ({ticketData}) => {
   const [formData, setFormData] = useState({
     TicketID: 2,
     UpdateDescription: 'Lead Id Alredy In your Bucket',
@@ -13,6 +13,7 @@ const Reply = () => {
     files: null,
   });
 
+  console.log("ticketData" , ticketData, 166)
   const handleChange = (e) => {
     setFormData({
       ...formData,

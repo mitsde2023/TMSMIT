@@ -1,7 +1,51 @@
 table tr:hover {
-    background-color: #e0c5c5;
-  }
-  
-  table.selected-table tr.selected-row {
-    background-color: #a7e6a5; 
-  }
+  background-color: #e0c5c5;
+}
+
+table.selected-table tr.selected-row {
+  background-color: #a7e6a5;
+}
+
+.image-container {
+  position: relative;
+  overflow: hidden;
+}
+
+.image-container img {
+  width: 100%;
+  height: auto;
+  transition: transform 0.3s ease;
+}
+
+.image-container.zoomed img {
+  transform: scale(1.2);
+  /* Adjust the scale factor as needed */
+  cursor: zoom-out;
+}
+
+
+.table-container {
+  overflow-x: auto;
+  width: 100%;
+}
+
+.custom-table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.custom-table th,
+.custom-table td {
+  border: 1px solid #dddddd;
+  padding: 5px;
+  text-align: left;
+}
+
+/* Style the fixed column */
+.custom-table th:first-child,
+.custom-table td:first-child {
+  position: sticky;
+  left: 0;
+  background-color: #f2f2f2;
+  z-index: 1;
+}

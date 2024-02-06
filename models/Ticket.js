@@ -30,10 +30,10 @@ const Ticket = sequelize.define('Ticket', {
     type: DataTypes.TEXT,
     allowNull: true,
   },
-  ClaimEmployeeID: { // Include EmployeeID field
-    type: DataTypes.INTEGER,
-    allowNull: true, // Make it nullable if you want to allow tickets without a specific employee
-  },
+  // ClaimEmployeeID: { // Include EmployeeID field
+  //   type: DataTypes.INTEGER,
+  //   allowNull: true, // Make it nullable if you want to allow tickets without a specific employee
+  // },
 
   AssignedToDepartmentID: {
     type: DataTypes.INTEGER,
@@ -54,14 +54,14 @@ const Ticket = sequelize.define('Ticket', {
 });
 
 Ticket.belongsTo(Student, { foreignKey: 'StudentId' });
+Ticket.belongsTo(Employee, { foreignKey: 'EmployeeID' });
 Ticket.belongsTo(Department, { foreignKey: 'AssignedToDepartmentID' });
 Ticket.belongsTo(SubDepartment, { foreignKey: 'AssignedToSubDepartmentID' });
 Ticket.belongsTo(Department, { foreignKey: 'TransferredToDepartmentID', as: 'TransferredToDepartment' });
 Ticket.belongsTo(SubDepartment, { foreignKey: 'TransferredToSubDepartmentID', as: 'TransferredToSubDepartment' });
-Ticket.belongsTo(Employee, { foreignKey: 'EmployeeID' });
-Ticket.belongsTo(Employee, { foreignKey: 'ClaimEmployeeID'});
-Ticket.belongsTo(Employee, { foreignKey: 'TransferredClaimEmployeeID', as: 'TransferredClaimToEmployee' });
+// Ticket.belongsTo(Employee, { foreignKey: 'ClaimEmployeeID'});
+// Ticket.belongsTo(Employee, { foreignKey: 'TransferredClaimEmployeeID', as: 'TransferredClaimToEmployee' });
 Ticket.hasMany(TicketUpdate, { foreignKey: 'TicketId' });
-Ticket.belongsTo(TicketResolution, { foreignKey: 'TicketResolutionId' });
+Ticket.hasOne(TicketResolution, { foreignKey: 'TicketId' });
 
 module.exports = Ticket;

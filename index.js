@@ -18,6 +18,7 @@ const authRoutes = require('./AuthRoutes/Auth');
 const OrgaRoutes = require('./Routes/Organization');
 const QueryRoutes = require('./Routes/Query');
 const EmployeeRoutes = require('./Routes/Employee')
+const TicketRoute = require('./Routes/Ticket')
 
 const app = express();
 app.use(cors());
@@ -40,6 +41,8 @@ app.use('/auth', authRoutes);
 app.use('/Org', OrgaRoutes);
 app.use('/Query', QueryRoutes);
 app.use('/Employee', EmployeeRoutes);
+app.use('/Ticket', TicketRoute);
+
 
 
 
@@ -177,7 +180,7 @@ app.get('/department/:departmentId/:SubDepartmentId', async (req, res) => {
 
 
         const tickets = await Ticket.findAll({
-            where: { AssignedToDepartmentID: departmentId, AssignedToSubDepartmentID:SubDepartmentId },
+            where: { AssignedToDepartmentID: departmentId},
             include: [
                 {
                     model: Employee,
