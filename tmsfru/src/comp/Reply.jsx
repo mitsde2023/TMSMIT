@@ -1,19 +1,40 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
-const Reply = ({ticketData}) => {
+const Reply = ({ ticketData }) => {
+  if (!ticketData) {
+    return <div>Loading...</div>; // or any other loading indicator
+  }
+
   const [formData, setFormData] = useState({
-    TicketID: 2,
-    UpdateDescription: 'Lead Id Alredy In your Bucket',
-    DepartmentID:1,
-    EmployeeID:13,
-    SubDepartmentID:1,
-    Feedback:5,
-    UpdateStatus:"Resolve",
+    TicketID: '',
+    UpdateDescription: '',
+    DepartmentID: JSON.parse(localStorage.getItem("user")).DepartmentID,
+    EmployeeID: JSON.parse(localStorage.getItem("user")).EmployeeID,
+    SubDepartmentID: JSON.parse(localStorage.getItem("user")).SubDepartmentID,
+    Feedback: '',
+    UpdateStatus: 'Resolve',
     files: null,
   });
 
-  console.log("ticketData" , ticketData, 166)
+  useEffect(() => {
+    if (ticketData) {
+      setFormData({
+        TicketID: ticketData?.TicketID || '',
+        UpdateDescription: '',
+        DepartmentID: JSON.parse(localStorage.getItem("user")).DepartmentID,
+        EmployeeID: JSON.parse(localStorage.getItem("user")).EmployeeID,
+        SubDepartmentID: JSON.parse(localStorage.getItem("user")).SubDepartmentID,
+        Feedback: '',
+        UpdateStatus: 'Resolve',
+        files: null,
+      });
+    }
+  }, [ticketData]);
+
+  console.log("ticketData", ticketData);
+  console.log("formData", formData);
+
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -41,20 +62,11 @@ const Reply = ({ticketData}) => {
       formDataToSend.append('Feedback', formData.Feedback);
       formDataToSend.append('UpdateStatus', formData.UpdateStatus);
 
-
-    //   formDataToSend.append('UpdateDescription', formData.UpdateDescription);
-
-      // formDataToSend.append('file', formData.file);
-
-
-        // Append each file to formDataToSend
-        for (const file of formData.files) {
-          formDataToSend.append('files', file);
-        }
-  
-
+      // Append each file to formDataToSend
+      for (const file of formData.files) {
+        formDataToSend.append('files', file);
+      }
       const response = await axios.post('http://localhost:2000/api/ticket-updates', formDataToSend);
-
       console.log('Response:', response.data);
     } catch (error) {
       console.error('Error submitting form:', error);
@@ -63,131 +75,51 @@ const Reply = ({ticketData}) => {
 
   return (
     <div className="max-w-md mx-auto mt-8">
-      <form onSubmit={handleSubmit}>
-        <div className="mb-4">
-          <label htmlFor="TicketID" className="block text-sm font-bold text-gray-700">
-            Ticket ID
-          </label>
-          <input
-            type="text"
-            id="TicketID"
-            name="TicketID"
-            value={formData.TicketID}
-            onChange={handleChange}
-            className="mt-1 p-2 w-full border rounded-md"
-            required
-          />
-        </div>
-        <div className="mb-4">
-          <label htmlFor="DepartmentID" className="block text-sm font-bold text-gray-700">
-          Department ID
-          </label>
-          <input
-            type="text"
-            id="DepartmentID"
-            name="DepartmentID"
-            value={formData.DepartmentID}
-            onChange={handleChange}
-            className="mt-1 p-2 w-full border rounded-md"
-            required
-          />
-        </div>
-        <div className="mb-4">
-          <label htmlFor="EmployeeID" className="block text-sm font-bold text-gray-700">
-          Employee ID
-          </label>
-          <input
-            type="text"
-            id="EmployeeID"
-            name="EmployeeID"
-            value={formData.EmployeeID}
-            onChange={handleChange}
-            className="mt-1 p-2 w-full border rounded-md"
-            required
-          />
-        </div>
-        <div className="mb-4">
-          <label htmlFor="SubDepartmentID" className="block text-sm font-bold text-gray-700">
-          SubDepartment ID
-          </label>
-          <input
-            type="text"
-            id="SubDepartmentID"
-            name="SubDepartmentID"
-            value={formData.SubDepartmentID}
-            onChange={handleChange}
-            className="mt-1 p-2 w-full border rounded-md"
-            required
-          />
-        </div>
-        <div className="mb-4">
-          <label htmlFor="UpdateStatus" className="block text-sm font-bold text-gray-700">
-          UpdateStatus
-          </label>
-          <input
-            type="text"
-            id="UpdateStatus"
-            name="UpdateStatus"
-            value={formData.UpdateStatus}
-            onChange={handleChange}
-            className="mt-1 p-2 w-full border rounded-md"
-            required
-          />
-        </div>
-        <div className="mb-4">
-          <label htmlFor="UpdateDescription" className="block text-sm font-bold text-gray-700">
-            Update Description
-          </label>
-          <textarea
-            id="UpdateDescription"
-            name="UpdateDescription"
-            value={formData.UpdateDescription}
-            onChange={handleChange}
-            className="mt-1 p-2 w-full border rounded-md"
-            required
-          />
-        </div>
-
-        {/* <div className="mb-4">
-          <label htmlFor="file" className="block text-sm font-bold text-gray-700">
-            File
-          </label>
-          <input
-            type="file"
-            id="file"
-            name="file"
-            onChange={handleFileChange}
-            className="mt-1 p-2 w-full border rounded-md"
-            accept=".jpg, .jpeg, .png, .gif, .pdf" // Add accepted file types
-            required
-          />
-        </div> */}
-
-        <div className="mb-4">
-          <label htmlFor="files" className="block text-sm font-bold text-gray-700">
-            Files
-          </label>
+    <form onSubmit={handleSubmit}>
+      <div className="mb-4 relative">
+        <textarea
+          id="UpdateDescription"
+          name="UpdateDescription"
+          value={formData.UpdateDescription}
+          onChange={handleChange}
+          className="mt-1 p-2 w-full border rounded-md"
+          required
+        />
+        <label htmlFor="files" className="absolute right-0 bottom-0 mr-2 mb-2 cursor-pointer">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-6 w-6 text-blue-500 hover:text-blue-600"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+            />
+          </svg>
           <input
             type="file"
             id="files"
             name="files"
             onChange={handleFileChange}
-            className="mt-1 p-2 w-full border rounded-md"
-            accept=".jpg, .jpeg, .png, .gif, .pdf" // Add accepted file types
-            multiple // Allow multiple file selection
+            className="hidden"
+            accept=".jpg, .jpeg, .png, .gif, .pdf"
+            multiple
             required
           />
-        </div>
-
-
-        <button
-          type="submit"
-          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-        >
-          Submit
-        </button>
-      </form>
-    </div>
+        </label>
+      </div>
+      <button
+        type="submit"
+        className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+      >
+        Submit
+      </button>
+    </form>
+  </div>
   );
 };
 

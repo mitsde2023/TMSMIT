@@ -55,6 +55,7 @@ function Home() {
     setOpenCount(counts.openCount);
     setResolvedCount(counts.resolvedCount);
   }, [data]);
+  
   useEffect(() => {
     fetchTicketData();
   }, []);
@@ -94,26 +95,26 @@ function Home() {
         </div>
         <Outlet></Outlet>
         {isModalOpen && (
-        <div className="modal-overlay" onClick={handleCloseModal}>
-          <div className="modal-content">
-            <img
-              src={selectedTicket.AttachmentUrl[0]}
-              alt="Ticket Attachment"
-              className="modal-image"
-            />
+          <div className="modal-overlay" onClick={handleCloseModal}>
+            <div className="modal-content">
+              <img
+                src={selectedTicket.AttachmentUrl[0]}
+                alt="Ticket Attachment"
+                className="modal-image"
+              />
+            </div>
           </div>
-        </div>
-      )}
+        )}
         <div className="table-container">
           <table
-            className={`custom-table ${
-              selectedTicket ? "selected-table" : ""
-            }`}
+            className={`custom-table ${selectedTicket ? "selected-table" : ""
+              }`}
           >
             <thead>
               <tr>
                 <th>Id</th>
                 <th>T-Type</th>
+                <th>Lead-Id</th>
                 <th>Status</th>
                 <th>Description</th>
                 <th>Location</th>
@@ -128,13 +129,13 @@ function Home() {
                 <tr
                   key={ticket.TicketID}
                   onClick={() => handleTicketClick(ticket)}
-                  className={`cursor-pointer ${
-                    selectedTicket === ticket ? "selected-row" : ""
-                  }`}
+                  className={`cursor-pointer ${selectedTicket === ticket ? "selected-row" : ""
+                    }`}
                 >
-                  <td>  {ticket.TicketID}</td>
+                  <td>{ticket.TicketID}</td>
                   <td>{ticket.TicketType}</td>
-                  <td>{ticket.Status}</td>
+                  <td>{ticket.LeadId ? <>{ticket.LeadId}</> : <>NA</>}</td>
+                  <td className="text-red-600">{ticket.Status}</td>
                   <td>{ticket.Description}</td>
                   <td>{ticket.Employee.Location}</td>
                   <td>{ticket.Employee.EmployeeName}</td>
@@ -193,20 +194,18 @@ function Home() {
 
       {/* Right Column */}
       <div className="sm:w-1/3">
-       <Reply ticketData={selectedTicket} />
-
 
         {selectedTicket && (
           <div className="p-4 bg-gray-100 border border-gray-300">
             <h2 className="font-bold text-2xl mb-4">Ticket Details:</h2>
             {/* <img src={selectedTicket.AttachmentUrl[0]} /> */}
-            <div className="image-container">
-      <img
-        src={selectedTicket.AttachmentUrl[0]}
-        alt="Ticket Attachment"
-        onClick={handleImageClick}
-      />
-    </div>
+            {/* <div className="image-container">
+              <img
+                src={selectedTicket.AttachmentUrl[0]}
+                alt="Ticket Attachment"
+                onClick={handleImageClick}
+              />
+            </div> */}
             <p>
               <strong>Ticket Type:</strong> {selectedTicket.TicketType}
             </p>
@@ -217,22 +216,32 @@ function Home() {
             <div className="mt-4">
               <h3 className="font-bold text-xl mb-2">Updates:</h3>
               {/* Display updates related to the selected ticket */}
-              {selectedTicket.TicketUpdates.map((update) => (
-                <div key={update.UpdateID} className="mb-2">
-                  <p>
-                    <strong>Update Status:</strong> {update.UpdateStatus}
-                  </p>
-                  <p>
-                    <strong>Description:</strong> {update.UpdateDescription}
-                  </p>
-                  {/* Add more details as needed */}
+              <div className="ticket-updates-container">
+                  {selectedTicket.TicketUpdates.map((update) => (
+                    <div
+                      key={update.UpdateID}
+                      className={`ticket-update ${update.EmployeeID === 1 ? 'sender' : 'receiver'}`}
+                    >
+                      <div className="update-info">
+                        <p><strong>Update Status:</strong> {update.UpdateStatus}</p>
+                        <p><strong>Description:</strong> {update.UpdateDescription}</p>
+                        {/* Add more details as needed */}
+                      </div>
+                      <div className="update-attachments">
+                        {update.UpdatedAttachmentUrls.map((url, index) => (
+                          <img key={index} src={url} alt={`Attachment ${index + 1}`} />
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+
                 </div>
-              ))}
             </div>
             {/* Add a form or UI for sending updates */}
             {/* ... */}
           </div>
         )}
+        <Reply ticketData={selectedTicket} />
       </div>
     </div>
   );

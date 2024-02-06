@@ -49,3 +49,41 @@ table.selected-table tr.selected-row {
   background-color: #f2f2f2;
   z-index: 1;
 }
+
+
+
+
+
+.ticket-updates-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.ticket-update {
+  display: flex;
+  max-width: 80%;
+  margin-left: auto; /* Aligns messages to the right by default */
+}
+
+.ticket-update.receiver {
+  margin-left: 0; /* Aligns messages to the left for the receiver */
+  margin-right: auto; /* Ensures attachments are aligned to the left */
+}
+
+.ticket-update .update-info {
+  background-color: #e5e5ea;
+  padding: 10px;
+  border-radius: 10px;
+}
+
+.ticket-update .update-attachments {
+  display: flex;
+  gap: 5px;
+}
+
+.ticket-update .update-attachments img {
+  max-width: 100px;
+  max-height: 100px;
+  border-radius: 5px;
+}
