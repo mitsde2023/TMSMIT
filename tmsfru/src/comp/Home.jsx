@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Link, Outlet } from "react-router-dom";
 import axios from "axios";
 import DepartmentTickets from "./DepartmentTickets";
@@ -10,8 +10,16 @@ function Home() {
   const [resolvedCount, setResolvedCount] = useState(0);
   const [selectedTicket, setSelectedTicket] = useState(null);
   const [isModalOpen, setModalOpen] = useState(false);
-
-  const handleImageClick = () => {
+  const [selectedImageUrl, setSelectedImageUrl] = useState(null); // State to store selected image URL
+  const ticketUpdatesContainerRef = useRef(null);
+  useEffect(() => {
+    if (ticketUpdatesContainerRef.current) {
+      ticketUpdatesContainerRef.current.scrollTop =
+        ticketUpdatesContainerRef.current.scrollHeight;
+    }
+  }, [selectedTicket]);
+  const handleImageClick = (url) => {
+    setSelectedImageUrl(url);
     setModalOpen(true);
   };
 
@@ -55,13 +63,24 @@ function Home() {
     setOpenCount(counts.openCount);
     setResolvedCount(counts.resolvedCount);
   }, [data]);
-  
+
   useEffect(() => {
     fetchTicketData();
   }, []);
 
   const handleTicketClick = (ticket) => {
     setSelectedTicket(ticket);
+  };
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const time = date.toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+    const day = date.getDate();
+    const month = date.toLocaleString("default", { month: "short" });
+    return `${time} ${day}-${month}`;
   };
   return (
     <div className="container mx-auto p-1 flex flex-col sm:flex-row text-sm">
@@ -98,8 +117,8 @@ function Home() {
           <div className="modal-overlay" onClick={handleCloseModal}>
             <div className="modal-content">
               <img
-                src={selectedTicket.AttachmentUrl[0]}
-                alt="Ticket Attachment"
+                src={selectedImageUrl}
+                alt="Selected Attachment"
                 className="modal-image"
               />
             </div>
@@ -107,8 +126,7 @@ function Home() {
         )}
         <div className="table-container">
           <table
-            className={`custom-table ${selectedTicket ? "selected-table" : ""
-              }`}
+            className={`custom-table ${selectedTicket ? "selected-table" : ""}`}
           >
             <thead>
               <tr>
@@ -129,8 +147,9 @@ function Home() {
                 <tr
                   key={ticket.TicketID}
                   onClick={() => handleTicketClick(ticket)}
-                  className={`cursor-pointer ${selectedTicket === ticket ? "selected-row" : ""
-                    }`}
+                  className={`cursor-pointer ${
+                    selectedTicket === ticket ? "selected-row" : ""
+                  }`}
                 >
                   <td>{ticket.TicketID}</td>
                   <td>{ticket.TicketType}</td>
@@ -191,58 +210,49 @@ function Home() {
           </div>
         </div>
       </div>
-
       {/* Right Column */}
       <div className="sm:w-1/3">
-
         {selectedTicket && (
-          <div className="p-4 bg-gray-100 border border-gray-300">
-            <h2 className="font-bold text-2xl mb-4">Ticket Details:</h2>
-            {/* <img src={selectedTicket.AttachmentUrl[0]} /> */}
-            {/* <div className="image-container">
-              <img
-                src={selectedTicket.AttachmentUrl[0]}
-                alt="Ticket Attachment"
-                onClick={handleImageClick}
-              />
-            </div> */}
-            <p>
-              <strong>Ticket Type:</strong> {selectedTicket.TicketType}
-            </p>
-            <p>
-              <strong>Status:</strong> {selectedTicket.Status}
-            </p>
-            {/* Add more details as needed */}
+          <div
+            ref={ticketUpdatesContainerRef}
+            className="m-2 p-2 bg-orange-400 border border-gray-300 overflow-y-auto max-h-96"
+          >
             <div className="mt-4">
-              <h3 className="font-bold text-xl mb-2">Updates:</h3>
-              {/* Display updates related to the selected ticket */}
               <div className="ticket-updates-container">
-                  {selectedTicket.TicketUpdates.map((update) => (
-                    <div
-                      key={update.UpdateID}
-                      className={`ticket-update ${update.EmployeeID === 1 ? 'sender' : 'receiver'}`}
-                    >
-                      <div className="update-info">
-                        <p><strong>Update Status:</strong> {update.UpdateStatus}</p>
-                        <p><strong>Description:</strong> {update.UpdateDescription}</p>
-                        {/* Add more details as needed */}
-                      </div>
-                      <div className="update-attachments">
-                        {update.UpdatedAttachmentUrls.map((url, index) => (
-                          <img key={index} src={url} alt={`Attachment ${index + 1}`} />
-                        ))}
-                      </div>
+                {selectedTicket.TicketUpdates.map((update) => (
+                  <div
+                    key={update.UpdateID}
+                    className={`ticket-update ${
+                      update.EmployeeID === 1 ? "sender" : "receiver"
+                    }`}
+                  >
+                    <div className="update-info">
+                      <p>{update.UpdateStatus}</p>
+                      <p>{update.UpdateDescription}</p>
+                      <small style={{ fontSize: "8px", color: "blue" }}>
+                        {formatDate(update.updatedAt)}
+                      </small>
                     </div>
-                  ))}
 
-                </div>
+                    <div className="update-attachments">
+                      {update.UpdatedAttachmentUrls.map((url, index) => (
+                        <img
+                          key={index}
+                          src={url}
+                          onClick={() => handleImageClick(url)} // Pass URL to handleImageClick
+                          alt={`Attachment ${index + 1}`}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
-            {/* Add a form or UI for sending updates */}
-            {/* ... */}
           </div>
         )}
         <Reply ticketData={selectedTicket} />
       </div>
+      ;
     </div>
   );
 }
