@@ -1,5 +1,8 @@
 const express = require('express');
+const { Server } = require('socket.io');
+
 const cors = require('cors');
+const http = require('http');
 const sequelize = require('./config');
 const multer = require('multer');
 const upload = multer({ dest: 'uploads/' });
@@ -21,6 +24,7 @@ const EmployeeRoutes = require('./Routes/Employee')
 const TicketRoute = require('./Routes/Ticket')
 
 const app = express();
+const server = http.createServer(app)
 app.use(cors());
 app.use(express.json());
 const port = 2000;
@@ -31,6 +35,35 @@ cloudinary.config({
     cloud_name: 'dtgpxvmpl',
     api_key: '113933747541586',
     api_secret: 'ubPVZqWAV1oOkGdwfuchq-l01i8',
+});
+
+
+const io = new Server(server, {
+    cors: {
+        origin: "http://localhost:5173",
+        methods: ["GET", "POST", "PUT"],
+    },
+});
+
+io.on("connection", (socket) => {
+    console.log(`User Connected: ${socket.id}`);
+
+    // socket.on("join_room", (data) => {
+    //   socket.join(data);
+    // });
+
+    // socket.on("ticketUpdate", (data) => {
+    //   socket.to(data.room).emit("receive_message", data);
+    // });
+    socket.on("ticketUpdate", (data ) => {
+        console.log(data, data.TicketIDasRoomId, 57)
+        io.to(data.TicketIDasRoomId).emit("updatedTicketChat", data);
+    });
+
+
+    socket.on("disconnect", () => {
+        console.log("User Disconnected", socket.id);
+    });
 });
 
 // Parse form data
@@ -246,13 +279,13 @@ app.get('/department/:departmentId/:SubDepartmentId', async (req, res) => {
 app.get('/Tickets/:EmployeeID', async (req, res) => {
     // const departmentId = req.params.departmentId;
     // const SubDepartmentId = req.params.departmentId;
-    const EmployeeID=req.params.EmployeeID
+    const EmployeeID = req.params.EmployeeID
     try {
         if (!EmployeeID) {
             return res.status(404).json({ error: 'Employee not found' });
         }
         const tickets = await Ticket.findAll({
-            where: {EmployeeID:EmployeeID },
+            where: { EmployeeID: EmployeeID },
             include: [
                 {
                     model: Employee,
@@ -377,7 +410,6 @@ app.post('/students', async (req, res) => {
 // Create a new ticket
 app.post('/tickets', async (req, res) => {
     const { UserID, TicketType, LeadId, Status, Description, StudentId, EmployeeID, Feedback, AssignedToDepartmentID, AssignedToSubDepartmentID, TransferredToDepartmentID, TransferredToSubDepartmentID } = req.body;
-
     try {
         const ticket = await Ticket.create({ UserID, TicketType, Status, Description, StudentId, EmployeeID, Feedback, AssignedToDepartmentID, AssignedToSubDepartmentID, TransferredToDepartmentID, TransferredToSubDepartmentID });
         res.status(201).json({ response: "success", data: ticket, status: 201 });
@@ -468,6 +500,76 @@ app.post('/tickets', async (req, res) => {
 
 // API endpoint for creating ticket updates
 
+// app.post('/api/ticket-updates', async (req, res) => {
+//     const { TicketID, UpdateDescription, Feedback, UpdateStatus, EmployeeID, StudentID, DepartmentID, SubDepartmentID } = req.body;
+//     console.log(req.body, 230);
+
+//     try {
+//         const ticket = await Ticket.findByPk(TicketID);
+//         if (!ticket) {
+//             return res.status(404).json({ error: 'Ticket not found' });
+//         }
+
+//         let updatedAttachmentUrls = [];
+//         //   if (req.files && req.files.length > 0) {
+//         //     // Compress and upload each file to Cloudinary
+//         //     for (const file of req.files) {
+//         //       const compressedImageBuffer = await sharp(file.path)
+//         //         .resize({ fit: 'inside', width: 800, height: 800 })
+//         //         .toBuffer();
+
+//         //       const result = await cloudinary.uploader.upload_stream({
+//         //         folder: 'ticket-updates', // Set the Cloudinary folder name
+//         //       }, (error, result) => {
+//         //         if (error) {
+//         //           console.error('Error uploading file to Cloudinary:', error);
+//         //           res.status(500).json({ success: false, message: 'Error uploading file to Cloudinary', error: error.message });
+//         //         } else {
+//         //           console.log('File uploaded to Cloudinary:', result);
+//         //           updatedAttachmentUrls.push(result.secure_url);
+//         //         }
+//         //       }).end(compressedImageBuffer);
+//         //     }
+//         //   }
+
+//         // Check if there are uploaded files
+//         if (req.files && req.files.length > 0) {
+//             // Upload each file to Cloudinary
+//             for (const file of req.files) {
+//                 const result = await cloudinary.uploader.upload(file.path, {
+//                     folder: 'ticket-updates', // Set the Cloudinary folder name
+//                 });
+//                 console.log(result, 246);
+//                 updatedAttachmentUrls.push(result.secure_url);
+//             }
+//         }
+
+//         // Create a new TicketUpdate record
+//         const ticketUpdate = await TicketUpdate.create({
+//             TicketID,
+//             UpdateDescription,
+//             UpdatedAttachmentUrls: updatedAttachmentUrls,
+//             EmployeeID,
+//             StudentID,
+//             UpdateStatus,
+//             Feedback,
+//             DepartmentID,
+//             SubDepartmentID,
+//         });
+//         io.on("connection", (socket) => {
+//             socket.on("ticketUpdate", (data) => {
+//                 socket.broadcast.emit("updatedTicketChat", ticketUpdate);
+//                 console.log(data,60)
+//               });
+//         });
+//         console.log(updatedAttachmentUrls, 283)
+//         res.json({ success: true, message: 'TicketUpdate created successfully', data: ticketUpdate });
+//     } catch (error) {
+//         console.error('Error creating TicketUpdate:', error);
+//         res.status(500).json({ success: false, message: 'Error creating TicketUpdate', error: error.message });
+//     }
+// });
+
 app.post('/api/ticket-updates', async (req, res) => {
     const { TicketID, UpdateDescription, Feedback, UpdateStatus, EmployeeID, StudentID, DepartmentID, SubDepartmentID } = req.body;
     console.log(req.body, 230);
@@ -479,28 +581,6 @@ app.post('/api/ticket-updates', async (req, res) => {
         }
 
         let updatedAttachmentUrls = [];
-        //   if (req.files && req.files.length > 0) {
-        //     // Compress and upload each file to Cloudinary
-        //     for (const file of req.files) {
-        //       const compressedImageBuffer = await sharp(file.path)
-        //         .resize({ fit: 'inside', width: 800, height: 800 })
-        //         .toBuffer();
-
-        //       const result = await cloudinary.uploader.upload_stream({
-        //         folder: 'ticket-updates', // Set the Cloudinary folder name
-        //       }, (error, result) => {
-        //         if (error) {
-        //           console.error('Error uploading file to Cloudinary:', error);
-        //           res.status(500).json({ success: false, message: 'Error uploading file to Cloudinary', error: error.message });
-        //         } else {
-        //           console.log('File uploaded to Cloudinary:', result);
-        //           updatedAttachmentUrls.push(result.secure_url);
-        //         }
-        //       }).end(compressedImageBuffer);
-        //     }
-        //   }
-
-        // Check if there are uploaded files
         if (req.files && req.files.length > 0) {
             // Upload each file to Cloudinary
             for (const file of req.files) {
@@ -524,6 +604,10 @@ app.post('/api/ticket-updates', async (req, res) => {
             DepartmentID,
             SubDepartmentID,
         });
+
+        // Emit the updatedTicketChat event with the ticketUpdate data
+        // io.emit("updatedTicketChat", ticketUpdate);
+        // io.emit("updatedTicketChat", ticketUpdate);
         console.log(updatedAttachmentUrls, 283)
         res.json({ success: true, message: 'TicketUpdate created successfully', data: ticketUpdate });
     } catch (error) {
@@ -531,7 +615,6 @@ app.post('/api/ticket-updates', async (req, res) => {
         res.status(500).json({ success: false, message: 'Error creating TicketUpdate', error: error.message });
     }
 });
-
 
 
 
@@ -673,7 +756,7 @@ app.post('/ticketresolutions', async (req, res) => {
 
 sequelize.sync({ force: false }) // Set force to true to drop and re-create tables on every server restart (use with caution in production)
     .then(() => {
-        app.listen(port, () => {
+        server.listen(port, () => {
             console.log(`Server listening on port ${port}`);
         });
     })

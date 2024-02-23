@@ -1,9 +1,23 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Link, Outlet } from "react-router-dom";
 import axios from "axios";
-import DepartmentTickets from "./DepartmentTickets";
+// import socket from "../socket";
+
+import io from "socket.io-client";
+
+
 import Reply from "./Reply";
 function Home() {
+  // const socket = io.connect("http://localhost:2000");
+
+  const socket = useMemo(
+    () =>io("http://localhost:2000"
+      // , {
+      //   withCredentials: true,
+      // }
+      ),
+    []
+  );
   const [data, setData] = useState([]);
   const [closedCount, setClosedCount] = useState(0);
   const [openCount, setOpenCount] = useState(0);
@@ -12,12 +26,25 @@ function Home() {
   const [isModalOpen, setModalOpen] = useState(false);
   const [selectedImageUrl, setSelectedImageUrl] = useState(null); // State to store selected image URL
   const ticketUpdatesContainerRef = useRef(null);
+  const [ticketupdateData, setTicketUpdateData] = useState([]);
+  const [chat, setChat] = useState([]);
+
+  useEffect(() => {
+    socket.on("updatedTicketChat", (data) => {
+      const datares = data.TicketUpdates;
+      console.log(datares, 23);
+      setChat((prevChat) => [...prevChat, datares]);
+    });
+  }, [socket]);
+
+  console.log("chat ts", chat, 26);
+
   useEffect(() => {
     if (ticketUpdatesContainerRef.current) {
       ticketUpdatesContainerRef.current.scrollTop =
         ticketUpdatesContainerRef.current.scrollHeight;
     }
-  }, [selectedTicket]);
+  }, [selectedTicket, chat]);
   const handleImageClick = (url) => {
     setSelectedImageUrl(url);
     setModalOpen(true);
@@ -26,8 +53,8 @@ function Home() {
   const handleCloseModal = () => {
     setModalOpen(false);
   };
-  // Assuming user is a string key for localStorage
-  const user = JSON.parse(localStorage.getItem("user")); // Parse the JSON string
+
+  const user = JSON.parse(localStorage.getItem("user"));
 
   function fetchTicketData() {
     if (user) {
@@ -70,6 +97,7 @@ function Home() {
 
   const handleTicketClick = (ticket) => {
     setSelectedTicket(ticket);
+    setTicketUpdateData(ticket.TicketUpdates);
   };
 
   const formatDate = (dateString) => {
@@ -82,10 +110,15 @@ function Home() {
     const month = date.toLocaleString("default", { month: "short" });
     return `${time} ${day}-${month}`;
   };
+
+  useEffect(() => {
+    setChat(ticketupdateData);
+  }, [selectedTicket]);
+
   return (
     <div className="container mx-auto p-1 flex flex-col sm:flex-row text-sm">
       {/* Left Column */}
-      <div className="sm:w-2/3">
+      <div className="sm:w-3/4">
         {/* <div className="p-1 bg-red-400 font-bold text-center">
           <Link to={"Tickets"}>Me ||</Link> <Link to={"Tickets"}> Tickets</Link>
         </div> */}
@@ -211,7 +244,7 @@ function Home() {
         </div>
       </div>
       {/* Right Column */}
-      <div className="sm:w-1/3">
+      <div className="sm:w-1/4">
         {selectedTicket && (
           <div
             ref={ticketUpdatesContainerRef}
@@ -219,30 +252,37 @@ function Home() {
           >
             <div className="mt-4">
               <div className="ticket-updates-container">
-                {selectedTicket.TicketUpdates.map((update) => (
+                {chat.map((update, index) => (
                   <div
-                    key={update.UpdateID}
+                    key={index}
                     className={`ticket-update ${
-                      update.EmployeeID === 1 ? "sender" : "receiver"
+                      update.EmployeeID ? "receiver" : "sender"
                     }`}
                   >
                     <div className="update-info">
                       <p>{update.UpdateStatus}</p>
                       <p>{update.UpdateDescription}</p>
-                      <small style={{ fontSize: "8px", color: "blue" }}>
-                        {formatDate(update.updatedAt)}
-                      </small>
+                      {/* <small style={{ fontSize: "8px", color: "blue" }}>
+                        {update.updatedAt ? formatDate(update.updatedAt) : ""}
+                      </small> */}
                     </div>
 
                     <div className="update-attachments">
-                      {update.UpdatedAttachmentUrls.map((url, index) => (
-                        <img
-                          key={index}
-                          src={url}
-                          onClick={() => handleImageClick(url)} // Pass URL to handleImageClick
-                          alt={`Attachment ${index + 1}`}
-                        />
-                      ))}
+                      {update.UpdatedAttachmentUrls ? (
+                        <>
+                          {" "}
+                          {update.UpdatedAttachmentUrls.map((url, index) => (
+                            <img
+                              key={index}
+                              src={url}
+                              onClick={() => handleImageClick(url)} // Pass URL to handleImageClick
+                              alt={`Attachment ${index + 1}`}
+                            />
+                          ))}
+                        </>
+                      ) : (
+                        <></>
+                      )}
                     </div>
                   </div>
                 ))}

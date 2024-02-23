@@ -3,7 +3,6 @@ import React from 'react'
 function Team() {
   return (
     <div className="container mx-auto p-1">
-    {/* Container 1 with 2 cards */}
     <div className="p-1 bg-red-200 font-bold text-center">Department Dashbord</div>
     <div className="mb-4">
       <h4 className="font-semibold mb-2">Total Organization</h4>

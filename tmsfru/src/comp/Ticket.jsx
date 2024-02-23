@@ -1,11 +1,23 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import Reply from "./Reply";
-
+import io from "socket.io-client";
 function Ticket() {
-  const [ownTicketData, setOwnTicketData] = useState([])
+  // const socket = io.connect("http://localhost:2000");
+  const socket = useMemo(
+    () =>io("http://localhost:2000"
+      // , {
+      //   withCredentials: true,
+      // }
+      ),
+    []
+  );
+  const [ownTicketData, setOwnTicketData] = useState([]);
   const [selectedTicket, setSelectedTicket] = useState(null);
+  const ticketUpdatesContainerRef = useRef(null);
+  const [ticketupdateData, setTicketUpdateData] = useState([]);
+  const [chat, setChat] = useState([]);
 
   const [formData, setFormData] = useState({
     TicketType: "Normal Ticket", // Default value from local storage
@@ -13,19 +25,28 @@ function Ticket() {
     Description: "",
     LeadId: "",
     AssignedToDepartmentID: 1, // Assigned department from local storage
-    AssignedToSubDepartmentID: 1,// Assigned sub department from local storage
+    AssignedToSubDepartmentID: 1, // Assigned sub department from local storage
     // AssignedToDepartmentID:JSON.parse(localStorage.getItem("user")).DepartmentID, // Assigned department from local storage
     // AssignedToSubDepartmentID:JSON.parse(localStorage.getItem("user")).SubDepartmentID,// Assigned sub department from local storage
     files: null, // Change to null for initial state
     EmployeeID: JSON.parse(localStorage.getItem("user")).EmployeeID, // EmployeeID from user object in local storage
   });
+  useEffect(() => {
+    socket.on("updatedTicketChat", (data) => {
+      const datares = data.TicketUpdates;
+      console.log(datares, 23);
+      setChat((prevChat) => [...prevChat, datares]);
+    });
+  }, [socket]);
+
+  console.log("chat tf", chat, 32);
   const user = JSON.parse(localStorage.getItem("user"));
   function fetchOwnTicketData() {
     if (user) {
       const dpId = user.DepartmentID;
       const SubDapId = user.SubDepartmentID;
       const EmpId = user.EmployeeID;
-      console.log(dpId, SubDapId, EmpId, 25)
+      console.log(dpId, SubDapId, EmpId, 25);
       axios
         .get(`http://localhost:2000/Tickets/${EmpId}`)
         .then((response) => {
@@ -37,6 +58,19 @@ function Ticket() {
         });
     }
   }
+
+  const handleTicketClick = (ticket) => {
+    setSelectedTicket(ticket);
+    setTicketUpdateData(ticket.TicketUpdates);
+  };
+
+  useEffect(() => {
+    if (ticketUpdatesContainerRef.current) {
+      ticketUpdatesContainerRef.current.scrollTop =
+        ticketUpdatesContainerRef.current.scrollHeight;
+    }
+  }, [selectedTicket, chat]);
+
   // useEffect(() => {
   //   // Count tickets based on their status
   //   const counts = data.reduce(
@@ -61,7 +95,7 @@ function Ticket() {
     fetchOwnTicketData();
   }, []);
 
-  console.log(selectedTicket, 17)
+  console.log(selectedTicket, 17);
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -79,24 +113,31 @@ function Ticket() {
       formDataObj.append(key, formData[key]);
     }
     for (const file of formData.files) {
-      formDataObj.append('files', file);
+      formDataObj.append("files", file);
     }
     try {
-      const response = await axios.post("http://localhost:2000/Ticket/Create", formDataObj, {
-        headers: {
-          "Content-Type": "multipart/form-data", // Ensure correct content type for file uploads
-        },
-      });
+      const response = await axios.post(
+        "http://localhost:2000/Ticket/Create",
+        formDataObj,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data", // Ensure correct content type for file uploads
+          },
+        }
+      );
       console.log(response.data); // Handle success response
     } catch (error) {
       console.error(error); // Handle error response
     }
   };
 
-  const handleTicketClick = (ticket) => {
-    setSelectedTicket(ticket);
-  };
+  // const handleTicketClick = (ticket) => {
+  //   setSelectedTicket(ticket);
+  // };
 
+  useEffect(() => {
+    setChat(ticketupdateData);
+  }, [selectedTicket]);
 
   return (
     <>
@@ -130,59 +171,84 @@ function Ticket() {
             </div>
           </div>
 
-          <form onSubmit={handleSubmit}>
+          <form
+            onSubmit={handleSubmit}
+            className="max-w-lg mx-auto p-1 bg-white rounded-lg shadow-md"
+          >
             <div className="mb-4">
-              <label
-                htmlFor="Description"
+              {/* <label
+                htmlFor="description"
                 className="block text-sm font-bold text-gray-700"
               >
                 Description:
-              </label>
+              </label> */}
               <textarea
-                id="Description"
+                id="description"
                 name="Description"
                 value={formData.Description}
                 onChange={handleChange}
-              />
-            </div>
-            <div className="mb-4">
-              <label
-                htmlFor="LeadId"
-                className="block text-sm font-bold text-gray-700"
-              >
-                LeadId:
-              </label>
-              <input
-                id="LeadId"
-                name="LeadId"
-                value={formData.LeadId}
-                onChange={handleChange}
+                rows={3}
+                className="mt-1 p-1 w-full border rounded-md focus:outline-none focus:ring focus:border-blue-300"
+                placeholder="Enter a brief description"
+                required
               />
             </div>
 
             <div className="mb-4">
-              <label htmlFor="files" className="block text-sm font-bold text-gray-700">
-                Files
-              </label>
+              {/* <label
+                htmlFor="leadId"
+                className="block text-sm font-bold text-gray-700"
+              >
+                Lead ID:
+              </label> */}
+              <input
+                id="leadId"
+                name="LeadId"
+                value={formData.LeadId}
+                onChange={handleChange}
+                type="text"
+                className="mt-1 p-1 w-full border rounded-md focus:outline-none focus:ring focus:border-blue-300"
+                placeholder="Enter Lead ID"
+                required
+              />
+            </div>
+
+            <div className="mb-4">
+              {/* <label
+                htmlFor="files"
+                className="block text-sm font-bold text-gray-700"
+              >
+                Upload Files:
+              </label> */}
               <input
                 type="file"
                 id="files"
                 name="files"
                 onChange={handleFileChange}
-                className="mt-1 p-2 w-full border rounded-md"
-                accept=".jpg, .jpeg, .png, .gif, .pdf" // Add accepted file types
-                multiple // Allow multiple file selection
+                className="mt-1 p-1 w-full border rounded-md focus:outline-none focus:ring focus:border-blue-300"
+                accept=".jpg, .jpeg, .png, .gif, .pdf"
+                multiple
                 required
               />
+              <p className="text-xs text-gray-500 mt-1">
+                Accepted file types: .jpg, .jpeg, .png, .gif, .pdf
+              </p>
             </div>
+
             {/* Add more input fields for other ticket data */}
-            <button type="submit">Submit</button>
+            <button
+              type="submit"
+              className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition duration-300"
+            >
+              Submit
+            </button>
           </form>
 
           <div className="table-container">
             <table
-              className={`custom-table ${selectedTicket ? "selected-table" : ""
-                }`}
+              className={`custom-table ${
+                selectedTicket ? "selected-table" : ""
+              }`}
             >
               <thead>
                 <tr>
@@ -203,8 +269,9 @@ function Ticket() {
                   <tr
                     key={ticket.TicketID}
                     onClick={() => handleTicketClick(ticket)}
-                    className={`cursor-pointer ${selectedTicket === ticket ? "selected-row" : ""
-                      }`}
+                    className={`cursor-pointer ${
+                      selectedTicket === ticket ? "selected-row" : ""
+                    }`}
                   >
                     <td>{ticket.TicketID}</td>
                     <td>{ticket.TicketType}</td>
@@ -229,73 +296,59 @@ function Ticket() {
               </tbody>
             </table>
           </div>
-
         </div>
 
         {/* Right Column */}
         <div className="sm:w-1/3">
-
           {selectedTicket && (
-            <div className="p-4 bg-gray-100 border border-gray-300">
-              <h2 className="font-bold text-2xl mb-4">Ticket Details:</h2>
-              {/* <img src={selectedTicket.AttachmentUrl[0]} /> */}
-              <div className="image-container">
-                {/* <img
-                src={selectedTicket.AttachmentUrl[0]}
-                alt="Ticket Attachment"
-                onClick={handleImageClick}
-              /> */}
-              </div>
-              <p>
-                <strong>Ticket Type:</strong> {selectedTicket.TicketType}
-              </p>
-              <p>
-                <strong>Status:</strong> {selectedTicket.Status}
-              </p>
-              {/* Add more details as needed */}
-              <div className="mt-4 ">
-                <h3 className="font-bold text-xl mb-2">Updates:</h3>
-                {/* Display updates related to the selected ticket */}
+            <div
+              ref={ticketUpdatesContainerRef}
+              className="m-2 p-2 bg-orange-400 border border-gray-300 overflow-y-auto max-h-96"
+            >
+              <div className="mt-4">
                 <div className="ticket-updates-container">
-                  {selectedTicket.TicketUpdates.map((update) => (
+                  {chat.map((update, index) => (
                     <div
-                      key={update.UpdateID}
-                      className={`ticket-update ${update.EmployeeID === 1 ? 'sender' : 'receiver'}`}
+                      key={index}
+                      className={`ticket-update ${
+                        update.EmployeeID === 1 ? "sender" : "receiver"
+                      }`}
                     >
                       <div className="update-info">
-                        <p><strong>Update Status:</strong> {update.UpdateStatus}</p>
-                        <p><strong>Description:</strong> {update.UpdateDescription}</p>
-                        {/* Add more details as needed */}
+                        <p>{update.UpdateStatus}</p>
+                        <p>{update.UpdateDescription}</p>
+                        {/* <small style={{ fontSize: "8px", color: "blue" }}>
+                        {update.updatedAt ? formatDate(update.updatedAt) : ""}
+                      </small> */}
                       </div>
+
                       <div className="update-attachments">
-                        {update.UpdatedAttachmentUrls.map((url, index) => (
-                          <img key={index} src={url} alt={`Attachment ${index + 1}`} />
-                        ))}
+                        {update.UpdatedAttachmentUrls ? (
+                          <>
+                            {" "}
+                            {update.UpdatedAttachmentUrls.map((url, index) => (
+                              <img
+                                key={index}
+                                src={url}
+                                onClick={() => handleImageClick(url)} // Pass URL to handleImageClick
+                                alt={`Attachment ${index + 1}`}
+                              />
+                            ))}
+                          </>
+                        ) : (
+                          <></>
+                        )}
                       </div>
                     </div>
                   ))}
-
                 </div>
-
               </div>
-              {/* Add a form or UI for sending updates */}
-              {/* ... */}
             </div>
           )}
           <Reply ticketData={selectedTicket} />
-
         </div>
       </div>
-
-
-
-
-
-
-
-
     </>
-
   );
 }
 export default Ticket;

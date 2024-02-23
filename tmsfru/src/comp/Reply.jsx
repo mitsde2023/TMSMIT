@@ -1,11 +1,23 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import axios from "axios";
+// import socket from "../socket";
+
+import io from 'socket.io-client'
+
+// const socket = io.connect("http://localhost:2000");
 
 const Reply = ({ ticketData }) => {
   if (!ticketData) {
     return <div>Loading...</div>; // or any other loading indicator
   }
-
+  const socket = useMemo(
+    () =>io("http://localhost:2000"
+      // , {
+      //   withCredentials: true,
+      // }
+      ),
+    []
+  );
   const [formData, setFormData] = useState({
     TicketID: "",
     UpdateDescription: "",
@@ -72,6 +84,7 @@ const Reply = ({ ticketData }) => {
           "http://localhost:2000/api/ticket-updates",
           formDataToSend
         );
+        socket.emit('ticketUpdate', {TicketUpdates: formData, TicketIDasRoomId:ticketData.TicketID })
         setFormData({
           TicketID: ticketData?.TicketID || "",
           UpdateDescription: "",
@@ -105,6 +118,9 @@ const Reply = ({ ticketData }) => {
     });
     
   };
+
+
+
   return (
     <div className="max-w-md mx-auto mt-1 m-2 p-2 relative">
       <form onSubmit={handleSubmit} onKeyDown={handleKeyDown}>
