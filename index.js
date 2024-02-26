@@ -45,28 +45,52 @@ const io = new Server(server, {
     },
 });
 
+// io.on("connection", (socket) => {
+//     console.log(`User Connected: ${socket.id}`);
+//     socket.on("ticketUpdate", (data ) => {
+//         console.log(data, data.TicketIDasRoomId, 57)
+//         socket.broadcast.emit("updatedTicketChat", data);
+//     });
+//     socket.on("disconnect", () => {
+//         console.log("User Disconnected", socket.id);
+//     });
+// });
+
+
 io.on("connection", (socket) => {
     console.log(`User Connected: ${socket.id}`);
 
-    // socket.on("join_room", (data) => {
-    //   socket.join(data);
-    // });
+    // Join the appropriate room based on TicketID
+    socket.on("joinTicketRoom", (ticketId) => {
+        socket.join(ticketId);
+        console.log(`User ${socket.id} joined room ${ticketId}`);
+    });
 
-    // socket.on("ticketUpdate", (data) => {
-    //   socket.to(data.room).emit("receive_message", data);
-    // });
-    socket.on("ticketUpdate", (data ) => {
-        console.log(data, data.TicketIDasRoomId, 57)
+    socket.on("ticketUpdate", (data) => {
+        console.log(data, data.TicketIDasRoomId, 57);
+
+        // Emit to the specific room using socket.to()
         io.to(data.TicketIDasRoomId).emit("updatedTicketChat", data);
     });
 
-
-    socket.on("disconnect", () => {
-        console.log("User Disconnected", socket.id);
-    });
+    // ... other code
 });
 
+// io.on("connection", (socket) => {
+//     console.log(`User Connected: ${socket.id}`);
+    
+//     socket.on("ticketUpdate", (data) => {
+//         console.log(data, data.TicketIDasRoomId);
+//         // Emit to the room identified by TicketIDasRoomId
+//         io.to(data.TicketIDasRoomId).emit("updatedTicketChat", data);
+//     });
+    
+//     socket.on("disconnect", () => {
+//         console.log("User Disconnected", socket.id);
+//     });
+// });
 // Parse form data
+
 app.use(express.urlencoded({ extended: true }));
 app.use(upload.any());
 

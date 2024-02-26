@@ -1,10 +1,10 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config');
+const Employee = require('./Employee');
 // const Ticket = require('./Ticket');
 // const Employee = require('./Employee');
 // const Employee = require('./Employee');
 // const Ticket = require('./Ticket');
-// const Employee = require('./Employee');
 
 
 const TicketResolution = sequelize.define('TicketResolution', {
@@ -13,30 +13,35 @@ const TicketResolution = sequelize.define('TicketResolution', {
     primaryKey: true,
     autoIncrement: true,
   },
-  ResolutionStatus: {
-    type: DataTypes.STRING(20),
-    allowNull: false,
-  },
+
+  // ResolutionStatus: {
+  //   type: DataTypes.STRING(20),
+  //   allowNull: false,
+  // },
   ResolutionDescription: {
     type: DataTypes.TEXT,
   },
-  ResolutionFeedback: {
-    type: DataTypes.INTEGER,
-    validate: {
-      min: 1,
-      max: 5,
-    },
-  },
-  // EmployeeID: {
+
+  // ResolutionFeedback: {
   //   type: DataTypes.INTEGER,
-  //   allowNull: true,
+  //   validate: {
+  //     min: 1,
+  //     max: 5,
+  //   },
   // },
-  ResolutionTimestamp: {
-    type: DataTypes.DATE,
+
+  ResEmployeeID: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
   },
+
+  // ResolutionTimestamp: {
+  //   type: DataTypes.DATE,
+  // },
 });
 
 // TicketResolution.belongsTo(Ticket, { foreignKey: 'TicketID' });
 // TicketResolution.belongsTo(Employee, { foreignKey: 'EmployeeID' });
+TicketResolution.belongsTo(Employee, { foreignKey: 'ResEmployeeID' });
 
 module.exports = TicketResolution;

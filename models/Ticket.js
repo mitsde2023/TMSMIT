@@ -35,6 +35,20 @@ const Ticket = sequelize.define('Ticket', {
   //   allowNull: true, // Make it nullable if you want to allow tickets without a specific employee
   // },
 
+  ResolutionDescription: {
+    type: DataTypes.TEXT,
+  },
+
+  CloseDescription: {
+    type: DataTypes.TEXT,
+  },
+  ResolutionFeedback: {
+    type: DataTypes.INTEGER,
+    validate: {
+      min: 1,
+      max: 5,
+    },
+  },
   AssignedToDepartmentID: {
     type: DataTypes.INTEGER,
   },

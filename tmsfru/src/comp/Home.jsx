@@ -5,27 +5,29 @@ import axios from "axios";
 
 import io from "socket.io-client";
 
-
 import Reply from "./Reply";
 function Home() {
   // const socket = io.connect("http://localhost:2000");
 
-  const socket = useMemo(
-    () =>io("http://localhost:2000"
-      // , {
-      //   withCredentials: true,
-      // }
-      ),
-    []
-  );
+  const socket = useMemo(() => io("http://localhost:2000"), []);
+
   const [data, setData] = useState([]);
+
+
   const [closedCount, setClosedCount] = useState(0);
   const [openCount, setOpenCount] = useState(0);
   const [resolvedCount, setResolvedCount] = useState(0);
+
+
   const [selectedTicket, setSelectedTicket] = useState(null);
+
   const [isModalOpen, setModalOpen] = useState(false);
-  const [selectedImageUrl, setSelectedImageUrl] = useState(null); // State to store selected image URL
+
+  const [selectedImageUrl, setSelectedImageUrl] = useState(null);   // State to store selected image URL
+
+  
   const ticketUpdatesContainerRef = useRef(null);
+
   const [ticketupdateData, setTicketUpdateData] = useState([]);
   const [chat, setChat] = useState([]);
 
@@ -35,7 +37,17 @@ function Home() {
       console.log(datares, 23);
       setChat((prevChat) => [...prevChat, datares]);
     });
-  }, [socket]);
+
+        // Assuming you have the ticketId available
+        if(selectedTicket){
+          socket.emit("joinTicketRoom", selectedTicket.TicketID);
+          console.log(selectedTicket.TicketID, 38)
+        }
+
+    return () => {
+      socket.off("updatedTicketChat");
+  };
+  }, [socket, selectedTicket]);
 
   console.log("chat ts", chat, 26);
 
@@ -72,7 +84,6 @@ function Home() {
     }
   }
   useEffect(() => {
-    // Count tickets based on their status
     const counts = data.reduce(
       (acc, ticket) => {
         if (ticket.Status === "Closed") {
@@ -100,29 +111,13 @@ function Home() {
     setTicketUpdateData(ticket.TicketUpdates);
   };
 
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    const time = date.toLocaleTimeString([], {
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-    const day = date.getDate();
-    const month = date.toLocaleString("default", { month: "short" });
-    return `${time} ${day}-${month}`;
-  };
-
   useEffect(() => {
     setChat(ticketupdateData);
   }, [selectedTicket]);
 
   return (
     <div className="container mx-auto p-1 flex flex-col sm:flex-row text-sm">
-      {/* Left Column */}
       <div className="sm:w-3/4">
-        {/* <div className="p-1 bg-red-400 font-bold text-center">
-          <Link to={"Tickets"}>Me ||</Link> <Link to={"Tickets"}> Tickets</Link>
-        </div> */}
-        {/* Container 1 with 2 cards */}
         <div className="mb-4">
           <h6 className="font-semibold mb-2">Comman Bucket</h6>
           <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-2 gap-4">
@@ -135,13 +130,11 @@ function Home() {
                 <i className="bi bi-postcard text-4xl"></i>
               </div>
             </Link>
-
             <div className="bg-green-200 p-4 rounded shadow flex justify-around hover:bg-green-400">
               <div>
                 <strong>My Feedback</strong>
                 <h5 className="font-semibold">{closedCount}</h5>
               </div>
-              {/* <i className="bi bi-journal-check text-4xl"></i> */}
             </div>
           </div>
         </div>

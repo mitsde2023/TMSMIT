@@ -4,15 +4,9 @@ import { Link } from "react-router-dom";
 import Reply from "./Reply";
 import io from "socket.io-client";
 function Ticket() {
-  // const socket = io.connect("http://localhost:2000");
-  const socket = useMemo(
-    () =>io("http://localhost:2000"
-      // , {
-      //   withCredentials: true,
-      // }
-      ),
-    []
-  );
+
+  const socket = useMemo(() =>io("http://localhost:2000"),[]);
+
   const [ownTicketData, setOwnTicketData] = useState([]);
   const [selectedTicket, setSelectedTicket] = useState(null);
   const ticketUpdatesContainerRef = useRef(null);
@@ -31,16 +25,26 @@ function Ticket() {
     files: null, // Change to null for initial state
     EmployeeID: JSON.parse(localStorage.getItem("user")).EmployeeID, // EmployeeID from user object in local storage
   });
+ 
   useEffect(() => {
     socket.on("updatedTicketChat", (data) => {
       const datares = data.TicketUpdates;
       console.log(datares, 23);
       setChat((prevChat) => [...prevChat, datares]);
     });
-  }, [socket]);
+    // Assuming you have the ticketId available
+    if(selectedTicket){
+      socket.emit("joinTicketRoom", selectedTicket.TicketID);
+      console.log(selectedTicket.TicketID, 38)
+    }
 
-  console.log("chat tf", chat, 32);
+    return () => {
+      socket.off("updatedTicketChat");
+  };
+  }, [socket, selectedTicket]);
+
   const user = JSON.parse(localStorage.getItem("user"));
+
   function fetchOwnTicketData() {
     if (user) {
       const dpId = user.DepartmentID;
@@ -63,7 +67,6 @@ function Ticket() {
     setSelectedTicket(ticket);
     setTicketUpdateData(ticket.TicketUpdates);
   };
-
   useEffect(() => {
     if (ticketUpdatesContainerRef.current) {
       ticketUpdatesContainerRef.current.scrollTop =
@@ -95,7 +98,6 @@ function Ticket() {
     fetchOwnTicketData();
   }, []);
 
-  console.log(selectedTicket, 17);
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };

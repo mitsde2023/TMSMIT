@@ -12,10 +12,10 @@ const TicketUpdate = sequelize.define('TicketUpdate', {
         primaryKey: true,
         autoIncrement: true,
     },
-    TicketID: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-    },
+    // TicketID: {
+    //     type: DataTypes.INTEGER,
+    //     allowNull: false,
+    // },
     UpdateStatus: {
         type: DataTypes.STRING(20),
         allowNull: false,

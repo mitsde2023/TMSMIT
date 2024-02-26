@@ -10,14 +10,9 @@ const Reply = ({ ticketData }) => {
   if (!ticketData) {
     return <div>Loading...</div>; // or any other loading indicator
   }
-  const socket = useMemo(
-    () =>io("http://localhost:2000"
-      // , {
-      //   withCredentials: true,
-      // }
-      ),
-    []
-  );
+  const socket = useMemo(() =>io("http://localhost:2000"),[]);
+
+  
   const [formData, setFormData] = useState({
     TicketID: "",
     UpdateDescription: "",
@@ -84,7 +79,8 @@ const Reply = ({ ticketData }) => {
           "http://localhost:2000/api/ticket-updates",
           formDataToSend
         );
-        socket.emit('ticketUpdate', {TicketUpdates: formData, TicketIDasRoomId:ticketData.TicketID })
+        socket.emit('ticketUpdate', { TicketUpdates: formData, TicketIDasRoomId: ticketData.TicketID })
+        // socket.emit('ticketUpdate', {TicketUpdates: formData, TicketIDasRoomId:ticketData.TicketID })
         setFormData({
           TicketID: ticketData?.TicketID || "",
           UpdateDescription: "",
