@@ -1,7 +1,7 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config');
 const SubDepartment = require('./SubDepartment');
-// const Employee = require('./Employee');
+const QueryCategory = require('./QueryCategory');
 
 const Department = sequelize.define('Department', {
   DepartmentID: {
@@ -15,6 +15,6 @@ const Department = sequelize.define('Department', {
   },
 });
 Department.hasMany(SubDepartment, { foreignKey: 'DepartmentId' });
-// Department.hasMany(Employee, { foreignKey: 'DepartmentId' });
+Department.hasMany(QueryCategory, { foreignKey: 'DepartmentId' });
 
 module.exports = Department;

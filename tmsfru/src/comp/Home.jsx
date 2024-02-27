@@ -13,19 +13,16 @@ function Home() {
 
   const [data, setData] = useState([]);
 
-
   const [closedCount, setClosedCount] = useState(0);
   const [openCount, setOpenCount] = useState(0);
   const [resolvedCount, setResolvedCount] = useState(0);
-
 
   const [selectedTicket, setSelectedTicket] = useState(null);
 
   const [isModalOpen, setModalOpen] = useState(false);
 
-  const [selectedImageUrl, setSelectedImageUrl] = useState(null);   // State to store selected image URL
+  const [selectedImageUrl, setSelectedImageUrl] = useState(null); // State to store selected image URL
 
-  
   const ticketUpdatesContainerRef = useRef(null);
 
   const [ticketupdateData, setTicketUpdateData] = useState([]);
@@ -38,15 +35,15 @@ function Home() {
       setChat((prevChat) => [...prevChat, datares]);
     });
 
-        // Assuming you have the ticketId available
-        if(selectedTicket){
-          socket.emit("joinTicketRoom", selectedTicket.TicketID);
-          console.log(selectedTicket.TicketID, 38)
-        }
+    // Assuming you have the ticketId available
+    if (selectedTicket) {
+      socket.emit("joinTicketRoom", selectedTicket.TicketID);
+      console.log(selectedTicket.TicketID, 38);
+    }
 
     return () => {
       socket.off("updatedTicketChat");
-  };
+    };
   }, [socket, selectedTicket]);
 
   console.log("chat ts", chat, 26);
@@ -139,6 +136,7 @@ function Home() {
           </div>
         </div>
         <Outlet></Outlet>
+
         {isModalOpen && (
           <div className="modal-overlay" onClick={handleCloseModal}>
             <div className="modal-content">
@@ -150,6 +148,7 @@ function Home() {
             </div>
           </div>
         )}
+        
         <div className="table-container">
           <table
             className={`custom-table ${selectedTicket ? "selected-table" : ""}`}
@@ -168,6 +167,7 @@ function Home() {
                 <th> RTimestamp</th>
               </tr>
             </thead>
+
             <tbody>
               {data.map((ticket) => (
                 <tr

@@ -178,12 +178,6 @@ function Ticket() {
             className="max-w-lg mx-auto p-1 bg-white rounded-lg shadow-md"
           >
             <div className="mb-4">
-              {/* <label
-                htmlFor="description"
-                className="block text-sm font-bold text-gray-700"
-              >
-                Description:
-              </label> */}
               <textarea
                 id="description"
                 name="Description"
@@ -197,12 +191,6 @@ function Ticket() {
             </div>
 
             <div className="mb-4">
-              {/* <label
-                htmlFor="leadId"
-                className="block text-sm font-bold text-gray-700"
-              >
-                Lead ID:
-              </label> */}
               <input
                 id="leadId"
                 name="LeadId"
@@ -216,12 +204,6 @@ function Ticket() {
             </div>
 
             <div className="mb-4">
-              {/* <label
-                htmlFor="files"
-                className="block text-sm font-bold text-gray-700"
-              >
-                Upload Files:
-              </label> */}
               <input
                 type="file"
                 id="files"

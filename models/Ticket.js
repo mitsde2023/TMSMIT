@@ -30,6 +30,7 @@ const Ticket = sequelize.define('Ticket', {
     type: DataTypes.TEXT,
     allowNull: true,
   },
+  
   // ClaimEmployeeID: { // Include EmployeeID field
   //   type: DataTypes.INTEGER,
   //   allowNull: true, // Make it nullable if you want to allow tickets without a specific employee

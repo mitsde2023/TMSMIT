@@ -8,7 +8,7 @@ const QueryCategory = sequelize.define('QueryCategory', {
         primaryKey: true,
         autoIncrement: true,
     },
-    name: {
+    QueryCategoryName: {
         type: DataTypes.STRING,
         allowNull: false,
     },
