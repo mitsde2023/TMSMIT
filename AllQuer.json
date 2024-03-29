@@ -1,0 +1,206 @@
+{
+    "departments": [
+      {
+        "DepartmentName": "IT",
+        "SubDepartments": [
+          {
+            "SubDepartmentName": "Hardware Support",
+            "QueryCategories": [
+              {
+                "QueryCategoryName": "Canvas",
+                "QuerySubcategories": [
+                  "Login Issue",
+                  "Desktop Support",
+                  "Audio problem / Headset issue",
+                  "Desktop hang / Not Working",
+                  "desktop Shifting",
+                  "headset change / requirement",
+                  "Internet slow/not working",
+                  "Monitor issue",
+                  "Mouse / keyboard issue",
+                  "System Not Working"
+                ]
+              },
+              {
+                "QueryCategoryName": "ERP (OLD)",
+                "QuerySubcategories": [
+                  "Working Slow"
+                ]
+              },
+              {
+                "QueryCategoryName": "Firewall Authentication",
+                "QuerySubcategories": [
+                  "Create User",
+                  "Firewall Authentication not working"
+                ]
+              },
+              {
+                "QueryCategoryName": "IVR / Call center",
+                "QuerySubcategories": [
+                  "Audio Problem",
+                  "Calling Problem/call login/delay",
+                  "customer down error",
+                  "ivr account creation",
+                  "Ivr side not open/could not extract error",
+                  "User already login"
+                ]
+              },
+              {
+                "QueryCategoryName": "Printing Documents",
+                "QuerySubcategories": [
+                  "Printout"
+                ]
+              },
+              {
+                "QueryCategoryName": "Software",
+                "QuerySubcategories": [
+                  "CRM Not working",
+                  "e-mail issue",
+                  "Excel / Google sheet not working",
+                  "google chrome not responding",
+                  "Login issue / password reset",
+                  "Software Not working",
+                  "Ubuntu / Windows OS installation",
+                  "Update Software",
+                  "WhatsApp not working"
+                ]
+              },
+              {
+                "QueryCategoryName": "TMS",
+                "QuerySubcategories": [
+                  "Create New User",
+                  "Login Issue"
+                ]
+              },
+              {
+                "QueryCategoryName": "Website",
+                "QuerySubcategories": [
+                  "New Web Page /Landing Page"
+                ]
+              }
+            ]
+          },
+          {
+            "SubDepartmentName": "App Support",
+            "QueryCategories": [
+              {
+                "QueryCategoryName": "Admission Panel / Dashboard",
+                "QuerySubcategories": [
+                  "additional development (coding)",
+                  "Registration Issue",
+                  "Student data update"
+                ]
+              },
+              {
+                "QueryCategoryName": "e-library",
+                "QuerySubcategories": [
+                  "functional Error",
+                  "Student Login Issue",
+                  "upload data / content / student"
+                ]
+              },
+              {
+                "QueryCategoryName": "Emails account",
+                "QuerySubcategories": [
+                  "modification in email id",
+                  "New employee email id creation or suspend account",
+                  "Password Reset"
+                ]
+              },
+              {
+                "QueryCategoryName": "ERP (OLD)",
+                "QuerySubcategories": [
+                  "New account create / active / deactivate / reset password",
+                  "Password Reset",
+                  "Working Slow"
+                ]
+              },
+              {
+                "QueryCategoryName": "Firewall Authentication",
+                "QuerySubcategories": [
+                  "Password Reset"
+                ]
+              },
+              {
+                "QueryCategoryName": "New LMS",
+                "QuerySubcategories": [
+                  "Content Update",
+                  "Login Issue",
+                  "Showing wrong specialization",
+                  "Student data process",
+                  "Update Specialization"
+                ]
+              },
+              {
+                "QueryCategoryName": "Software",
+                "QuerySubcategories": [
+                  "e-mail issue"
+                ]
+              },
+              {
+                "QueryCategoryName": "TMS",
+                "QuerySubcategories": [
+                  "Create New User",
+                  "Login Issue",
+                  "Ticket Generation issue"
+                ]
+              },
+              {
+                "QueryCategoryName": "Website",
+                "QuerySubcategories": [
+                  "New Web Page /Landing Page",
+                  "update in website"
+                ]
+              }
+            ]
+          },
+          {
+            "SubDepartmentName": "LMS",
+            "QueryCategories": [
+              {
+                "QueryCategoryName": "LMS (Vowel)",
+                "QuerySubcategories": [
+                  "login credential Issue",
+                  "Student Account Update/Active/Deactivate",
+                  "Upload Contain on LMS"
+                ]
+              },
+              {
+                "QueryCategoryName": "New LMS",
+                "QuerySubcategories": [
+                  "Content Update",
+                  "Login Issue",
+                  "Showing wrong specialization",
+                  "Student data process",
+                  "Update Specialization"
+                ]
+              }
+            ]
+          },
+          {
+            "SubDepartmentName": "MIS",
+            "QueryCategories": [
+              {
+                "QueryCategoryName": "Extraa Edge",
+                "QuerySubcategories": [
+                  "Account active/ Deactive/ Creation",
+                  "Change Counselor Contact No",
+                  "Change Lead Emailid /contact No.",
+                  "Counselor Lead Pause/ Unpause",
+                  "Leads Shuffle"
+                ]
+              },
+              {
+                "QueryCategoryName": "Lead Transfer",
+                "QuerySubcategories": [
+                  "Leads Transfer(New/NI/WP/Close/Overdue)",
+                  "Recycle Leads"
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+  
