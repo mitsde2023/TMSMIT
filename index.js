@@ -46,7 +46,7 @@ const io = new Server(server, {
         methods: ["GET", "POST", "PUT"],
     },
 });
-
+// scoket connection for client
 // io.on("connection", (socket) => {
 //     console.log(`User Connected: ${socket.id}`);
 //     socket.on("ticketUpdate", (data ) => {
