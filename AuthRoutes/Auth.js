@@ -3,7 +3,7 @@ const Student = require('../models/Student');
 const Employee = require('../models/Employee');
 const router = express.Router();
 
-// Login route
+// Login route for api
 router.post('/login', async (req, res) => {
     const { email, password } = req.body;
 
