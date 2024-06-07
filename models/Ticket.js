@@ -40,9 +40,9 @@ const Ticket = sequelize.define('Ticket', {
     type: DataTypes.TEXT,
   },
 
-  CloseDescription: {
-    type: DataTypes.TEXT,
-  },
+  // CloseDescription: {
+  //   type: DataTypes.TEXT,
+  // },
   ResolutionFeedback: {
     type: DataTypes.INTEGER,
     validate: {
