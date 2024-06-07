@@ -19,7 +19,7 @@ router.get('/categories/:QueryCategoryID', async (req, res) => {
   }
 });
 
-
+// add
 router.get('/categories', async (req, res) => {
   try {
     const categoriesWithSubcategories = await QueryCategory.findAll({
